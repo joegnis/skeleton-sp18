@@ -128,6 +128,16 @@ public class IntList {
     }
 
     /**
+     * Gets the ith item of the list
+     */
+    public int get(int i) {
+        if (i == 0) {
+            return first;
+        }
+        return rest.get(i - 1);
+    }
+
+    /**
      * Returns a list equal to L with all elements squared. Destructive.
      */
     public static void dSquareList(IntList L) {

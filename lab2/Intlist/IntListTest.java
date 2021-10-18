@@ -143,6 +143,21 @@ public class IntListTest {
                         }));
     }
 
+    @TestFactory
+    public Stream<DynamicTest> testGetIth() {
+        IntList tested = IntList.of(5, 6, -2, 4, 8);
+        List<Integer> inputs = Arrays.asList(0, 1, 2, 3, 4);
+        List<Integer> outputs = Arrays.asList(5, 6, -2, 4, 8);
+
+        Objects.requireNonNull(tested);
+        return inputs.stream()
+                .map(input -> DynamicTest.dynamicTest("Getting element at location " + input,
+                        () -> {
+                            int expected = outputs.get(inputs.indexOf(input));
+                            assertEquals(expected, tested.get(input));
+                        }));
+    }
+
     @Test
     public void testDcatenate() {
         IntList A = IntList.of(1, 2, 3);
