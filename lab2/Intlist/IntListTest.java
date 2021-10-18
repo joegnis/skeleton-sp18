@@ -1,6 +1,14 @@
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class IntListTest {
 
@@ -46,6 +54,93 @@ public class IntListTest {
         IntList res = IntList.squareListRecursive(L);
         assertEquals(IntList.of(1, 2, 3), L);
         assertEquals(IntList.of(1, 4, 9), res);
+    }
+
+    @Test
+    public void testSize() {
+        assertEquals(1, Objects.requireNonNull(IntList.of(1)).size());
+        assertEquals(2, Objects.requireNonNull(IntList.of(1, 2)).size());
+        assertEquals(5, Objects.requireNonNull(IntList.of(1, 2, 3, 4, 5)).size());
+    }
+
+    @Test
+    public void testIterativeSize() {
+        assertEquals(1, Objects.requireNonNull(IntList.of(1)).iterativeSize());
+        assertEquals(2, Objects.requireNonNull(IntList.of(1, 2)).iterativeSize());
+        assertEquals(5, Objects.requireNonNull(IntList.of(1, 2, 3, 4, 5)).iterativeSize());
+    }
+
+    @Test
+    public void testIterativeReversed() {
+        assertEquals(IntList.of(1), Objects.requireNonNull(IntList.of(1)).iterativeReversed());
+        assertEquals(IntList.of(1, 2), Objects.requireNonNull(IntList.of(2, 1)).iterativeReversed());
+        assertEquals(IntList.of(3, 4, 5, 1), Objects.requireNonNull(IntList.of(1, 5, 4, 3)).iterativeReversed());
+    }
+
+    @Test
+    public void testReversed() {
+        assertEquals(IntList.of(1), Objects.requireNonNull(IntList.of(1)).reversed());
+        assertEquals(IntList.of(1, 2), Objects.requireNonNull(IntList.of(2, 1)).reversed());
+        assertEquals(IntList.of(3, 4, 5, 1), Objects.requireNonNull(IntList.of(1, 5, 4, 3)).reversed());
+        assertEquals(IntList.of(3, 2, 4, 5, 1), Objects.requireNonNull(IntList.of(1, 5, 4, 2, 3)).reversed());
+    }
+
+    @TestFactory
+    public Stream<DynamicTest> testIterativeReversedInPlace() {
+        List<IntList> inputLists = Arrays.asList(
+                IntList.of(1),
+                IntList.of(3, 5),
+                IntList.of(3, 4, 5, 1),
+                IntList.of(1, 6, 8, 2, 0)
+        );
+        List<IntList> expectedOutputs = Arrays.asList(
+                IntList.of(1),
+                IntList.of(5, 3),
+                IntList.of(1, 5, 4, 3),
+                IntList.of(0, 2, 8, 6, 1)
+        );
+
+        return inputLists.stream()
+                        .map(input -> DynamicTest.dynamicTest("Reversing " + input,
+                                () -> {
+                            IntList expectedOutput = expectedOutputs.get(inputLists.indexOf(input));
+                            IntList reversed = input.iterativeReversedInPlace();
+                            int inputSize = input.size();
+                            assertEquals(expectedOutput, reversed);
+                            if (inputSize > 1) {
+                                // Tests if reversed in place
+                                assertNotEquals(expectedOutput, input);
+                            }
+                        }));
+    }
+
+    @TestFactory
+    public Stream<DynamicTest> testReversedInPlace() {
+        List<IntList> inputLists = Arrays.asList(
+                IntList.of(1),
+                IntList.of(3, 5),
+                IntList.of(3, 4, 5, 1),
+                IntList.of(1, 6, 8, 2, 0)
+        );
+        List<IntList> expectedOutputs = Arrays.asList(
+                IntList.of(1),
+                IntList.of(5, 3),
+                IntList.of(1, 5, 4, 3),
+                IntList.of(0, 2, 8, 6, 1)
+        );
+
+        return inputLists.stream()
+                .map(input -> DynamicTest.dynamicTest("Reversing " + input,
+                        () -> {
+                            IntList expectedOutput = expectedOutputs.get(inputLists.indexOf(input));
+                            IntList reversed = input.reversedInPlace();
+                            int inputSize = input.size();
+                            assertEquals(expectedOutput, reversed);
+                            if (inputSize > 1) {
+                                // Tests if reversed in place
+                                assertNotEquals(expectedOutput, input);
+                            }
+                        }));
     }
 
     @Test

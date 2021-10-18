@@ -34,6 +34,100 @@ public class IntList {
     }
 
     /**
+     * Gets the size of the list recursively.
+     */
+    public int size() {
+        if (rest == null) {
+            return 1;
+        }
+        return rest.size() + 1;
+    }
+
+    /**
+     * Gets the size non-recursively.
+     */
+    public int iterativeSize() {
+        IntList curList = this;
+        int size = 1;
+        while (curList.rest != null) {
+            size += 1;
+            curList = curList.rest;
+        }
+        return size;
+    }
+
+    /**
+     * Gets a copy of this list with reversed order of its elements (iteratively)
+     */
+    public IntList iterativeReversed() {
+        IntList result = new IntList(first, null);
+        IntList curNode = this.rest;
+        while (curNode != null) {
+            result = new IntList(curNode.first, result);
+            curNode = curNode.rest;
+        }
+        return result;
+    }
+
+    /**
+     * Gets a copy of this list with reversed order of its elements (recursively)
+     */
+    public IntList reversed() {
+        IntList firstNodeList = new IntList();
+        reversedHelper(firstNodeList);
+        return firstNodeList.rest;
+    }
+
+    private IntList reversedHelper(IntList firstNodeList) {
+        if (rest == null) {
+            IntList newNode = new IntList(first, null);
+            firstNodeList.rest = newNode;
+            return newNode;
+        }
+        IntList reversedRestLastNode = rest.reversedHelper(firstNodeList);
+        reversedRestLastNode.rest = new IntList(first, null);
+        return reversedRestLastNode.rest;
+    }
+
+    /**
+     * Reverses this list in place using an iterative method
+     */
+    public IntList iterativeReversedInPlace() {
+        IntList reversed = null;
+        IntList curNode = this;
+        IntList nextNode = curNode;
+        while (curNode != null) {
+            nextNode = nextNode.rest;
+
+            curNode.rest = reversed;
+            reversed = curNode;
+
+            curNode = nextNode;
+        }
+        return reversed;
+    }
+
+    /**
+     * Reverses this list in place with a recursive method
+     */
+    public IntList reversedInPlace() {
+        IntList preNode = new IntList();
+        reversedInPlaceHelper(preNode);
+        return preNode.rest;
+    }
+
+    private IntList reversedInPlaceHelper(IntList preNode) {
+        if (rest == null) {
+            preNode.rest = this;
+            return this;
+        }
+        IntList reversedRestLastNode = rest.reversedInPlaceHelper(preNode);
+        reversedRestLastNode.rest = this;
+        rest = null;
+        return this;
+    }
+
+    /**
      * Returns a list equal to L with all elements squared. Destructive.
      */
     public static void dSquareList(IntList L) {
