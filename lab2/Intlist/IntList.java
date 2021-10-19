@@ -73,9 +73,11 @@ public class IntList {
      * Gets a copy of this list with reversed order of its elements (recursively)
      */
     public IntList reversed() {
-        IntList firstNodeList = new IntList();
-        reversedHelper(firstNodeList);
-        return firstNodeList.rest;
+        IntList preNode = new IntList();
+        reversedHelper(preNode);
+        IntList reversedList = preNode.rest;
+        preNode.rest = null;
+        return reversedList;
     }
 
     private IntList reversedHelper(IntList firstNodeList) {
@@ -113,7 +115,9 @@ public class IntList {
     public IntList reversedInPlace() {
         IntList preNode = new IntList();
         reversedInPlaceHelper(preNode);
-        return preNode.rest;
+        IntList reversedList = preNode.rest;
+        preNode.rest = null;
+        return reversedList;
     }
 
     private IntList reversedInPlaceHelper(IntList preNode) {
