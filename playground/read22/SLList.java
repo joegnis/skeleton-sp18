@@ -9,14 +9,22 @@ public class SLList {
     }
 
     private IntNode first;
+    private int size;
+
+    public SLList() {
+        size = 0;
+        first = null;
+    }
 
     public SLList(int x) {
         first = new IntNode(x, null);
+        size = 1;
     }
 
     /** Adds an item to the front of the list. */
     public void addFirst(int x) {
         first = new IntNode(x, first);
+        size += 1;
     }
 
     /** Retrieves the front item from the list. */
@@ -26,27 +34,21 @@ public class SLList {
 
     /** Adds an item to the end of the list. */
     public void addLast(int x) {
+        if (size == 0) {
+            first = new IntNode(x, null);
+            size = 1;
+            return;
+        }
+
         IntNode lastNode = first;
         while (lastNode.next != null) {
             lastNode = lastNode.next;
         }
         lastNode.next = new IntNode(x, null);
+        size += 1;
     }
 
-    /** Returns the number of items in the list using recursion. */
     public int size() {
-        // needs a helper method to implement recursively
-        return sizeHelper(first);
+        return size;
     }
-
-    private static int sizeHelper(IntNode list) {
-        // this method can be static
-        // this method can be named help too
-        if (list.next == null) {
-            return 1;
-        }
-
-        return 1 + list.next.size();
-    }
-
 }
