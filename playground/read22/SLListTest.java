@@ -5,6 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SLListTest {
 
     @Test
+    public void testAddFirst() {
+        SLList list = new SLList();
+        list.addFirst(1);
+        assertEquals(1, list.getFirst());
+
+        list.addFirst(2);
+        assertEquals(2, list.getFirst());
+    }
+
+    @Test
     public void testSize() {
         SLList list = new SLList();
         assertEquals(0, list.size());
