@@ -168,6 +168,12 @@ public class IntListTest {
     }
 
     @Test
+    public void testDcatendateNull() {
+        assertEquals(IntList.of(1, 2, 3), IntList.dcatenate(null, IntList.of(1, 2, 3)));
+        assertEquals(IntList.of(1, 2, 3), IntList.dcatenate(IntList.of(1, 2, 3), null));
+    }
+
+    @Test
     public void testCatenate() {
         IntList A = IntList.of(1, 2, 3);
         IntList B = IntList.of(4, 5, 6);
@@ -176,4 +182,10 @@ public class IntListTest {
         assertEquals(IntList.of(1, 2, 3), A);
     }
 
+    @Test
+    public void testCatendateNull() {
+        IntList A = IntList.of(1, 2, 3);
+        assertEquals(A, IntList.dcatenate(null, A));
+        assertEquals(A, IntList.dcatenate(A, null));
+    }
 }
