@@ -5,6 +5,10 @@
 !**.json
 !.expelimicate
 !.gitignore
+!*.iml
+!*/.idea/**/*.xml
+out/
+*/.idea/runConfigurations.xml
 .class
 *.log
 *.ctxt
