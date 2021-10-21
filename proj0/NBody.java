@@ -90,9 +90,12 @@ public class NBody {
         Planet[] planets = readPlanets(filename);
         double radius = readRadius(filename);
 
-        StdDraw.setScale(-256, 256);
+        StdDraw.setScale(-radius, radius);
         StdDraw.clear();
         StdDraw.picture(0, 0, "images/starfield.jpg");
+        for (Planet planet : planets) {
+            planet.draw();
+        }
         StdDraw.show();
     }
 }
