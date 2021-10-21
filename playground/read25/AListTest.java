@@ -49,11 +49,11 @@ public class AListTest {
         assertEquals(99, L.get(0));
         L.addLast(36);
         assertEquals(99, L.get(0));
-        L.removeLast();
+        int removed = L.removeLast();
+        assertEquals(36, removed);
         assertEquals(99, L.getLast());
-        L.addLast(100);
-        assertEquals(100, L.getLast());
-        assertEquals(2, L.size());
+        removed = L.removeLast();
+        assertEquals(99, removed);
     }
 
     /** Tests insertion of a large number of items.*/
