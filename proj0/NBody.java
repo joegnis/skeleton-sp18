@@ -92,10 +92,40 @@ public class NBody {
 
         StdDraw.setScale(-radius, radius);
         StdDraw.clear();
-        StdDraw.picture(0, 0, "images/starfield.jpg");
-        for (Planet planet : planets) {
-            planet.draw();
+
+        double[] xForces = new double[planets.length];
+        double[] yForces = new double[planets.length];
+
+        for (double time = 0; time < T; time += dt) {
+            StdDraw.enableDoubleBuffering();
+
+            for (int iPlanet = 0; iPlanet < planets.length; iPlanet++) {
+                Planet curPlanet = planets[iPlanet];
+                xForces[iPlanet] = curPlanet.calcNetForceExertedByX(planets);
+                yForces[iPlanet] = curPlanet.calcNetForceExertedByY(planets);
+            }
+
+            for (int iPlanet = 0; iPlanet < planets.length; iPlanet++) {
+                planets[iPlanet].update(dt, xForces[iPlanet], yForces[iPlanet]);
+            }
+
+            // Draws background
+            StdDraw.picture(0, 0, "images/starfield.jpg");
+
+            for (Planet planet : planets) {
+                planet.draw();
+            }
+
+            StdDraw.show();
+            StdDraw.pause(10);
         }
-        StdDraw.show();
+
+        StdOut.printf("%d\n", planets.length);
+        StdOut.printf("%.2e\n", radius);
+        for (Planet planet : planets) {
+            StdOut.printf("%11.4e %11.4e %11.4e %11.4e %11.4e %12s\n",
+                    planet.xxPos, planet.yyPos, planet.xxVel,
+                    planet.yyVel, planet.mass, planet.imgFileName);
+        }
     }
 }
