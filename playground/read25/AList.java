@@ -10,6 +10,7 @@ public class AList {
     private int size;
 
     private final static int INIT_CAPACITY = 50;
+    private final static double MIN_USAGE_RATIO = 0.25;
 
     /** Creates an empty list. */
     public AList() {
@@ -47,7 +48,7 @@ public class AList {
     public int removeLast() {
         int removed = array[size - 1];
         size -= 1;
-        if (size <= capacity / 2 && size > INIT_CAPACITY) {
+        if (size / (double) capacity <= MIN_USAGE_RATIO) {
             resizeTo(capacity / 2);
         }
 
