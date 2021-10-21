@@ -23,7 +23,7 @@ public class NBody {
         }
 
         Planet[] planets = new Planet[numPlanets];
-        for (int curPlanet = 0; curPlanet < 5; curPlanet++) {
+        for (int curPlanet = 0; curPlanet < numPlanets; curPlanet++) {
             double xPos, yPos, xVel, yVel, mass;
             String imgName;
             try {
@@ -88,24 +88,25 @@ public class NBody {
 
         filename = args[2];
         Planet[] planets = readPlanets(filename);
+        int numPlanets = planets.length;
         double radius = readRadius(filename);
 
         StdDraw.setScale(-radius, radius);
         StdDraw.clear();
 
-        double[] xForces = new double[planets.length];
-        double[] yForces = new double[planets.length];
+        double[] xForces = new double[numPlanets];
+        double[] yForces = new double[numPlanets];
 
         for (double time = 0; time < T; time += dt) {
             StdDraw.enableDoubleBuffering();
 
-            for (int iPlanet = 0; iPlanet < planets.length; iPlanet++) {
+            for (int iPlanet = 0; iPlanet < numPlanets; iPlanet++) {
                 Planet curPlanet = planets[iPlanet];
                 xForces[iPlanet] = curPlanet.calcNetForceExertedByX(planets);
                 yForces[iPlanet] = curPlanet.calcNetForceExertedByY(planets);
             }
 
-            for (int iPlanet = 0; iPlanet < planets.length; iPlanet++) {
+            for (int iPlanet = 0; iPlanet < numPlanets; iPlanet++) {
                 planets[iPlanet].update(dt, xForces[iPlanet], yForces[iPlanet]);
             }
 
@@ -120,7 +121,7 @@ public class NBody {
             StdDraw.pause(10);
         }
 
-        StdOut.printf("%d\n", planets.length);
+        StdOut.printf("%d\n", numPlanets);
         StdOut.printf("%.2e\n", radius);
         for (Planet planet : planets) {
             StdOut.printf("%11.4e %11.4e %11.4e %11.4e %11.4e %12s\n",
