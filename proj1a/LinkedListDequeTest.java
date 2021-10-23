@@ -2,6 +2,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 /** Performs some basic linked list tests. */
 public class LinkedListDequeTest {
 	
@@ -163,5 +166,34 @@ public class LinkedListDequeTest {
 		assertEquals(1, lld1.getRecursive(0));
 		assertEquals(2, lld1.getRecursive(1));
 		assertEquals(3, lld1.getRecursive(2));
+	}
+
+	@Test
+	public void printDequeTest() {
+		try {
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			System.setOut(new PrintStream(out));
+
+			LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
+			lld1.printDeque();
+			assertEquals("", out.toString());
+
+			lld1.addLast(1);
+			out.reset();
+			lld1.printDeque();
+			assertEquals("1", out.toString());
+
+			lld1.addLast(2);
+			out.reset();
+			lld1.printDeque();
+			assertEquals("1 2", out.toString());
+
+			lld1.addLast(3);
+			out.reset();
+			lld1.printDeque();
+			assertEquals("1 2 3", out.toString());
+		} finally {
+			System.setOut(System.out);
+		}
 	}
 }

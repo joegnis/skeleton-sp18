@@ -58,7 +58,18 @@ public class LinkedListDeque<T> implements Deque<T> {
      * Prints the items in the deque from first to last, separated by a space.
      */
     public void printDeque() {
+        StringBuilder builder = new StringBuilder();
 
+        Node<T> curNode = sentinel.next;
+        while (curNode != sentinel) {
+            builder.append(curNode.item.toString());
+            builder.append(' ');
+            curNode = curNode.next;
+        }
+        if (builder.length() > 0) {
+            builder.deleteCharAt(builder.length() - 1);
+        }
+        System.out.print(builder);
     }
 
     /**
