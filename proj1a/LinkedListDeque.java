@@ -14,11 +14,35 @@
  * Does not use Java’s built in LinkedList data structure (or any data structure from java.util.*)
  */
 public class LinkedListDeque<T> implements Deque<T> {
+    private static class Node<T> {
+        public T item;
+        public Node<T> next;
+        public Node<T> prev;
+
+        public Node(T item, Node<T> next, Node<T> prev) {
+            this.item = item;
+            this.next = next;
+            this.prev = prev;
+        }
+
+        public Node(T item) {
+            this.item = item;
+            this.next = null;
+            this.prev = null;
+        }
+    }
+    private int size;
+    private Node<T> sentinel;
+
     public LinkedListDeque() {
+        size = 0;
+        sentinel = new Node<>(null);
+        sentinel.next = sentinel;
+        sentinel.prev = sentinel;
     }
 
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     /**
@@ -27,9 +51,12 @@ public class LinkedListDeque<T> implements Deque<T> {
      * Takes constant time.
      */
     public int size() {
-        return 0;
+        return size;
     }
 
+    /**
+     * Prints the items in the deque from first to last, separated by a space.
+     */
     public void printDeque() {
 
     }
@@ -40,7 +67,10 @@ public class LinkedListDeque<T> implements Deque<T> {
      * Takes constant time.
      */
     public void addFirst(T item) {
-
+        Node<T> newNode = new Node<>(item, sentinel.next, sentinel);
+        sentinel.next.prev = newNode;
+        sentinel.next = newNode;
+        size += 1;
     }
 
     /**
@@ -59,7 +89,16 @@ public class LinkedListDeque<T> implements Deque<T> {
      * Takes constant time.
      */
     public T removeFirst() {
-        return null;
+        if (sentinel.next == null) {
+            return null;
+        }
+        Node<T> firstNode = sentinel.next;
+        sentinel.next = firstNode.next;
+        firstNode.next.prev = sentinel;
+        firstNode.next = null;
+        firstNode.prev = null;
+        size -= 1;
+        return firstNode.item;
     }
 
     /**
@@ -90,5 +129,16 @@ public class LinkedListDeque<T> implements Deque<T> {
      */
     public T getRecursive(int index) {
         return null;
+    }
+
+    public T[] toArray() {
+        T[] array = (T []) new Object[size];
+
+        int curIndex = 0;
+        for (Node<T> curNode = sentinel.next; curNode != sentinel; curNode = curNode.next, curIndex += 1) {
+            array[curIndex] = curNode.item;
+        }
+
+        return array;
     }
 }
