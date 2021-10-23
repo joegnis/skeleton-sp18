@@ -86,6 +86,10 @@ public class LinkedListDequeTest {
 		assertEquals(1, removed);
 		assertArrayEquals(new Integer[]{}, lld1.toArray());
 		assertEquals(0, lld1.size());
+
+		assertNull(lld1.removeFirst());
+		assertEquals(0, lld1.size());
+		assertArrayEquals(new Integer[]{}, lld1.toArray());
 	}
 
 	@Test
@@ -125,6 +129,10 @@ public class LinkedListDequeTest {
 		assertEquals(1, removed);
 		assertArrayEquals(new Integer[]{}, lld1.toArray());
 		assertEquals(0, lld1.size());
+
+		assertNull(lld1.removeLast());
+		assertEquals(0, lld1.size());
+		assertArrayEquals(new Integer[]{}, lld1.toArray());
 	}
 
 	@Test
