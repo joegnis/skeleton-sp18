@@ -92,15 +92,15 @@ public class LinkedListDeque<T> implements Deque<T> {
      * Takes constant time.
      */
     public T removeFirst() {
-        if (sentinel.next == sentinel) {
-            return null;
-        }
         Node<T> firstNode = sentinel.next;
         sentinel.next = firstNode.next;
         firstNode.next.prev = sentinel;
-        firstNode.next = null;
-        firstNode.prev = null;
-        size -= 1;
+
+        if (firstNode != sentinel) {
+            firstNode.next = null;
+            firstNode.prev = null;
+            size -= 1;
+        }
         return firstNode.item;
     }
 
