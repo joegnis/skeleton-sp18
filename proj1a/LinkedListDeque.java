@@ -150,7 +150,19 @@ public class LinkedListDeque<T> implements Deque<T> {
      * Takes linear time. Implemented recursively.
      */
     public T getRecursive(int index) {
-        return null;
+        if (index < 0) {
+            return null;
+        }
+        return getRecursiveHelper(index, sentinel.next);
+    }
+
+    private T getRecursiveHelper(int index, Node<T> curNode) {
+        if (curNode == sentinel) {
+            return null;
+        } else if (index == 0) {
+            return curNode.item;
+        }
+        return getRecursiveHelper(index - 1, curNode.next);
     }
 
     public T[] toArray() {
