@@ -79,7 +79,10 @@ public class LinkedListDeque<T> implements Deque<T> {
      * Takes constant time
      */
     public void addLast(T item) {
-
+        Node<T> newNode = new Node<>(item, sentinel, sentinel.prev);
+        sentinel.prev.next = newNode;
+        sentinel.prev = newNode;
+        size += 1;
     }
 
     /**
@@ -108,7 +111,16 @@ public class LinkedListDeque<T> implements Deque<T> {
      * Takes constant time.
      */
     public T removeLast() {
-        return null;
+        Node<T> lastNode = sentinel.prev;
+        lastNode.prev.next = sentinel;
+        sentinel.prev = lastNode.prev;
+
+        if (lastNode != sentinel) {
+            lastNode.prev = null;
+            lastNode.next = null;
+        }
+        size -= 1;
+        return lastNode.item;
     }
 
     /**

@@ -2,8 +2,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 /** Performs some basic linked list tests. */
 public class LinkedListDequeTest {
 	
@@ -77,13 +75,55 @@ public class LinkedListDequeTest {
 		Integer removed = lld1.removeFirst();
 		assertEquals(3, removed);
 		assertArrayEquals(new Integer[]{2, 1}, lld1.toArray());
+		assertEquals(2, lld1.size());
 
 		removed = lld1.removeFirst();
 		assertEquals(2, removed);
 		assertArrayEquals(new Integer[]{1}, lld1.toArray());
+		assertEquals(1, lld1.size());
 
 		removed = lld1.removeFirst();
 		assertEquals(1, removed);
 		assertArrayEquals(new Integer[]{}, lld1.toArray());
+		assertEquals(0, lld1.size());
+	}
+
+	@Test
+	public void addLastTest() {
+		LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
+		lld1.addLast(1);
+		assertArrayEquals(new Integer[]{1}, lld1.toArray());
+		assertEquals(1, lld1.size());
+
+		lld1.addLast(2);
+		assertArrayEquals(new Integer[]{1, 2}, lld1.toArray());
+		assertEquals(2, lld1.size());
+
+		lld1.addLast(3);
+		assertArrayEquals(new Integer[]{1, 2, 3}, lld1.toArray());
+		assertEquals(3, lld1.size());
+	}
+
+	@Test
+	public void removeLastTest() {
+		LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
+		lld1.addLast(1);
+		lld1.addLast(2);
+		lld1.addLast(3);
+
+		Integer removed = lld1.removeLast();
+		assertEquals(3, removed);
+		assertArrayEquals(new Integer[]{1, 2}, lld1.toArray());
+		assertEquals(2, lld1.size());
+
+		removed = lld1.removeLast();
+		assertEquals(2, removed);
+		assertArrayEquals(new Integer[]{1}, lld1.toArray());
+		assertEquals(1, lld1.size());
+
+		removed = lld1.removeFirst();
+		assertEquals(1, removed);
+		assertArrayEquals(new Integer[]{}, lld1.toArray());
+		assertEquals(0, lld1.size());
 	}
 }
