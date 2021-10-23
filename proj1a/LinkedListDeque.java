@@ -1,5 +1,5 @@
 /**
- * Double ended queue
+ * Double ended queue implemented by a linked list
  *
  * Space complexity:
  * The amount of memory used at any given time is proportional to the number of items. For example, if you add 10,000
@@ -32,7 +32,7 @@ public class LinkedListDeque<T> implements Deque<T> {
         }
     }
     private int size;
-    private Node<T> sentinel;
+    private final Node<T> sentinel;
 
     public LinkedListDeque() {
         size = 0;
