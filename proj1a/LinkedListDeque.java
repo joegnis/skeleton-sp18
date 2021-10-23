@@ -130,7 +130,17 @@ public class LinkedListDeque<T> implements Deque<T> {
      * Takes linear time. Implemented iteratively.
      */
     public T get(int index) {
-        return null;
+        int curIndex = 0;
+        Node<T> curNode = sentinel.next;
+        while (curIndex < index && curNode != sentinel) {
+            curNode = curNode.next;
+            curIndex += 1;
+        }
+        if (curNode == sentinel || index < 0) {
+            return null;
+        } else {
+            return curNode.item;
+        }
     }
 
     /**

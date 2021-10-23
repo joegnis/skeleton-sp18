@@ -126,4 +126,19 @@ public class LinkedListDequeTest {
 		assertArrayEquals(new Integer[]{}, lld1.toArray());
 		assertEquals(0, lld1.size());
 	}
+
+	@Test
+	public void getTest() {
+		LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
+		lld1.addLast(1);
+		lld1.addLast(2);
+		lld1.addLast(3);
+
+		assertNull(lld1.get(-1));
+		assertNull(lld1.get(3));
+		assertNull(lld1.get(100));
+		assertEquals(1, lld1.get(0));
+		assertEquals(2, lld1.get(1));
+		assertEquals(3, lld1.get(2));
+	}
 }
