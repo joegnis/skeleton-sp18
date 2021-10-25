@@ -6,8 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ArrayDequeTest {
     @Test
@@ -89,5 +88,39 @@ public class ArrayDequeTest {
         } finally {
             System.setOut(System.out);
         }
+    }
+
+    @Test
+    public void removeFirst() {
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
+
+        deque.addLast(3);
+        deque.addFirst(2);
+        deque.addFirst(1);
+        assertEquals(1, deque.removeFirst());
+        assertEquals(2, deque.size());
+        assertEquals(2, deque.removeFirst());
+        assertEquals(1, deque.size());
+        assertEquals(3, deque.removeFirst());
+        assertEquals(0, deque.size());
+        assertNull(deque.removeFirst());
+        assertEquals(0, deque.size());
+    }
+
+    @Test
+    public void removeLast() {
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
+
+        deque.addFirst(3);
+        deque.addLast(2);
+        deque.addLast(1);
+        assertEquals(1, deque.removeLast());
+        assertEquals(2, deque.size());
+        assertEquals(2, deque.removeLast());
+        assertEquals(1, deque.size());
+        assertEquals(3, deque.removeLast());
+        assertEquals(0, deque.size());
+        assertNull(deque.removeLast());
+        assertEquals(0, deque.size());
     }
 }

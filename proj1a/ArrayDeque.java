@@ -67,12 +67,22 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public T removeFirst() {
-        return null;
+        if (size == 0) {
+            return null;
+        }
+        sentinel = offsetPos(sentinel, 1);
+        size -= 1;
+        return items[sentinel];
     }
 
     @Override
     public T removeLast() {
-        return null;
+        if (size == 0) {
+            return null;
+        }
+        last = offsetPos(last, -1);
+        size -= 1;
+        return items[last];
     }
 
     @Override
