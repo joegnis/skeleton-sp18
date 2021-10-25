@@ -6,25 +6,36 @@
  *   except during resizing operations
  * - get, size take constant time
  * Other details
- * - The starting size of array is 8.
+ * - The starting capacity of the array is 8.
  * - The amount of memory used at any given time is proportional to the number of items.
  * - For arrays of length 16 or more, usage factor is at least 25%. For smaller arrays, usage factor is arbitrarily low.
  * - The array is circular.
  */
 public class ArrayDeque<T> implements Deque<T> {
+    private final static int RESIZE_MULTIPLIER = 2;
+
+    private T[] items;
+    private int size;
+    private int capacity;
+    private int firstIndex;
+    private int lastIndex;
 
     public ArrayDeque() {
-
+        capacity = 8;
+        items = (T[]) new Object[capacity];
+        size = 0;
+        firstIndex = 0;
+        lastIndex = 0;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
@@ -55,5 +66,27 @@ public class ArrayDeque<T> implements Deque<T> {
     @Override
     public T get(int index) {
         return null;
+    }
+
+    /**
+     * Returns an index's position in the circular array
+     *
+     * @param pos original position
+     * @param offset offset to the origin
+     * @return new position
+     */
+    private int offsetPos(int pos, int offset) {
+        int newPos = pos + offset;
+        while (newPos < 0) {
+            newPos += capacity;
+        }
+        while (newPos >= capacity) {
+            newPos -= capacity;
+        }
+        return newPos;
+    }
+
+    private void resize() {
+        double usageRatio = size / (double) capacity;
     }
 }
