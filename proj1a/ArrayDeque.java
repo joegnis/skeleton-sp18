@@ -41,7 +41,7 @@ public class ArrayDeque<T> implements Deque<T> {
     @Override
     public void printDeque() {
         StringBuilder builder = new StringBuilder();
-        for (int index = offsetPos(sentinel, 1); index < last; index = offsetPos(index, 1)) {
+        for (int index = offsetPos(sentinel, 1); index != last; index = offsetPos(index, 1)) {
             builder.append(items[index]);
             builder.append(" ");
         }
@@ -84,9 +84,11 @@ public class ArrayDeque<T> implements Deque<T> {
         T[] array = (T []) new Object[size];
 
         int arrayPos = 0;
-        for (int pos = offsetPos(sentinel, 1); arrayPos < size; pos = offsetPos(pos, 1), arrayPos += 1) {
-            // arrayPos < size detects empty items
-            array[arrayPos] = items[pos];
+        for (int index = offsetPos(sentinel, 1); index != last; index = offsetPos(index, 1)) {
+            // can not use index < last as exit condition because it is a circular array where last can be
+            // less than index in the beginning
+            array[arrayPos] = items[index];
+            arrayPos += 1;
         }
 
         return array;
