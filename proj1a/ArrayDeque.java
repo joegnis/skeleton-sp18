@@ -40,7 +40,15 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public void printDeque() {
-
+        StringBuilder builder = new StringBuilder();
+        for (int index = offsetPos(sentinel, 1); index < last; index = offsetPos(index, 1)) {
+            builder.append(items[index]);
+            builder.append(" ");
+        }
+        if (builder.length() > 0) {
+            builder.deleteCharAt(builder.length() - 1);
+        }
+        System.out.print(builder);
     }
 
     @Override

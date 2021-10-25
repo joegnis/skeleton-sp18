@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -58,5 +60,34 @@ public class ArrayDequeTest {
         deque.addFirst(3);
         assertEquals(3, deque.size());
         assertArrayEquals(new Integer[]{3, 2, 1}, deque.toArray());
+    }
+
+    @Test
+    public void printDequeTest() {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(out));
+
+            ArrayDeque<Integer> ad1 = new ArrayDeque<>();
+            ad1.printDeque();
+            assertEquals("", out.toString());
+
+            ad1.addLast(1);
+            out.reset();
+            ad1.printDeque();
+            assertEquals("1", out.toString());
+
+            ad1.addLast(2);
+            out.reset();
+            ad1.printDeque();
+            assertEquals("1 2", out.toString());
+
+            ad1.addLast(3);
+            out.reset();
+            ad1.printDeque();
+            assertEquals("1 2 3", out.toString());
+        } finally {
+            System.setOut(System.out);
+        }
     }
 }
