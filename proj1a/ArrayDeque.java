@@ -115,12 +115,9 @@ public class ArrayDeque<T> implements Deque<T> {
      * @return new position
      */
     private int offsetPos(int pos, int offset) {
-        int newPos = pos + offset;
-        while (newPos < 0) {
+        int newPos = (pos + offset) % capacity;
+        if (newPos < 0) {
             newPos += capacity;
-        }
-        while (newPos >= capacity) {
-            newPos -= capacity;
         }
         return newPos;
     }
