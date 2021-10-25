@@ -123,4 +123,21 @@ public class ArrayDequeTest {
         assertNull(deque.removeLast());
         assertEquals(0, deque.size());
     }
+
+    @Test
+    public void getTest() {
+        ArrayDeque<Integer> ad1 = new ArrayDeque<>();
+        ad1.addFirst(1);
+        ad1.addLast(2);
+        ad1.addLast(3);
+        // Out of bound tests
+        assertNull(ad1.get(-1));
+        assertNull(ad1.get(3));
+        assertNull(ad1.get(100));
+        assertNull(ad1.get(-100));
+
+        assertEquals(1, ad1.get(0));
+        assertEquals(3, ad1.get(2));
+        assertEquals(2, ad1.get(1));
+    }
 }

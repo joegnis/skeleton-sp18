@@ -86,8 +86,11 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     @Override
-    public T get(int index) {
-        return null;
+    public T get(int pos) {
+        if (pos < 0 || pos >= size) {
+            return null;
+        }
+        return items[offsetPos(sentinel, 1 + pos)];
     }
 
     public T[] toArray() {
