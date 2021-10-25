@@ -17,15 +17,15 @@ public class ArrayDeque<T> implements Deque<T> {
     private T[] items;
     private int size;
     private int capacity;
-    private int firstIndex;
-    private int lastIndex;
+    private int sentinel;
+    private int last;  // pos of last element + 1
 
     public ArrayDeque() {
         capacity = 8;
         items = (T[]) new Object[capacity];
         size = 0;
-        firstIndex = 0;
-        lastIndex = 0;
+        sentinel = capacity - 1;
+        last = 0;
     }
 
     @Override
@@ -45,12 +45,16 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public void addFirst(T item) {
-
+        items[sentinel] = item;
+        sentinel = offsetPos(sentinel, -1);
+        size += 1;
     }
 
     @Override
     public void addLast(T item) {
-
+        items[last] = item;
+        last = offsetPos(last, 1);
+        size += 1;
     }
 
     @Override
@@ -66,6 +70,18 @@ public class ArrayDeque<T> implements Deque<T> {
     @Override
     public T get(int index) {
         return null;
+    }
+
+    public T[] toArray() {
+        T[] array = (T []) new Object[size];
+
+        int arrayPos = 0;
+        for (int pos = offsetPos(sentinel, 1); arrayPos < size; pos = offsetPos(pos, 1), arrayPos += 1) {
+            // arrayPos < size detects empty items
+            array[arrayPos] = items[pos];
+        }
+
+        return array;
     }
 
     /**
