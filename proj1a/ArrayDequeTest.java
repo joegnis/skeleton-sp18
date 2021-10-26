@@ -241,4 +241,14 @@ public class ArrayDequeTest {
         assertEquals(8, fieldCapacity.getInt(ad1));
         assertArrayEquals(new Integer[]{5, 6, 8}, ad1.toArray());
     }
+
+    @Test
+    public void isEmptyTest() {
+        ArrayDeque<Integer> ad = new ArrayDeque<>();
+        assertTrue(ad.isEmpty());
+        ad.addFirst(1);
+        assertFalse(ad.isEmpty());
+        ad.removeLast();
+        assertTrue(ad.isEmpty());
+    }
 }
