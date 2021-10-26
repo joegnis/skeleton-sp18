@@ -1,9 +1,9 @@
 /**
  * Double ended deque implemented by array
- *
+ * <p>
  * Time complexity:
  * - {@link #addFirst(T)}, {@link #addLast(T)}, {@link #removeLast()}, {@link #removeLast()} take constant time,
- *   except during resizing operations
+ * except during resizing operations
  * - get, size take constant time
  * Other details
  * - The starting capacity of the array is 8.
@@ -12,9 +12,9 @@
  * - The array is circular.
  */
 public class ArrayDeque<T> implements Deque<T> {
-    private final static int RESIZE_MULTIPLIER = 2;
-    private final static double USAGE_RATIO_SHRINK_THRESHOLD = 0.25;
-    private final static int USAGE_RATIO_MIN_CAPACITY = 16;
+    private static final int RESIZE_MULTIPLIER = 2;
+    private static final double USAGE_RATIO_SHRINK_THRESHOLD = 0.25;
+    private static final int USAGE_RATIO_MIN_CAPACITY = 16;
 
     private T[] items;
     private int size;
@@ -32,6 +32,19 @@ public class ArrayDeque<T> implements Deque<T> {
         size = 0;
         sentinel = capacity - 1;
         last = 0;
+    }
+
+    public static <T> ArrayDeque<T> of(T... values) {
+        int numValues = values.length;
+        int capacity = 8;
+        while (capacity <= numValues + 1) {
+            capacity *= RESIZE_MULTIPLIER;
+        }
+        ArrayDeque<T> deque = new ArrayDeque<>(capacity);
+        System.arraycopy(values, 0, deque.items, 0, numValues);
+        deque.size = numValues;
+        deque.last = deque.offsetPos(numValues - 1, 1);
+        return deque;
     }
 
     @Override
@@ -102,7 +115,7 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     public T[] toArray() {
-        T[] array = (T []) new Object[size];
+        T[] array = (T[]) new Object[size];
 
         int arrayPos = 0;
         for (int index = offsetPos(sentinel, 1); index != last; index = offsetPos(index, 1)) {
@@ -115,23 +128,10 @@ public class ArrayDeque<T> implements Deque<T> {
         return array;
     }
 
-    public static <T> ArrayDeque<T> of(T... values) {
-        int numValues = values.length;
-        int capacity = 8;
-        while (capacity <= numValues + 1) {
-            capacity *= RESIZE_MULTIPLIER;
-        }
-        ArrayDeque<T> deque = new ArrayDeque<>(capacity);
-        System.arraycopy(values, 0, deque.items, 0, numValues);
-        deque.size = numValues;
-        deque.last = deque.offsetPos(numValues - 1, 1);
-        return deque;
-    }
-
     /**
      * Returns an index's position in the circular array
      *
-     * @param pos original position
+     * @param pos    original position
      * @param offset offset to the origin
      * @return new position
      */
@@ -145,7 +145,7 @@ public class ArrayDeque<T> implements Deque<T> {
 
     /**
      * Resizes items array, and expand/shrink accordingly
-     *
+     * <p>
      * Called after adding/removing an item
      */
     private void resize(boolean incSizeByOne) {

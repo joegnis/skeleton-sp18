@@ -1,17 +1,21 @@
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-/** Performs some basic linked list tests. */
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Performs some basic linked list tests.
+ */
 public class LinkedListDequeTest {
-	
-	/** Adds a few things to the list, checking isEmpty() and size() are correct,
-	  * finally printing the results. 
-	  *
-	  * && is the "and" operation. */
+
+	/**
+	 * Adds a few things to the list, checking isEmpty() and size() are correct,
+	 * finally printing the results.
+	 * <p>
+	 * && is the "and" operation.
+	 */
 	@Test
 	public void addIsEmptySizeTest() {
 		LinkedListDeque<String> lld1 = new LinkedListDeque<>();
@@ -19,7 +23,7 @@ public class LinkedListDequeTest {
 		assertTrue(lld1.isEmpty());
 
 		lld1.addFirst("front");
-		
+
 		assertEquals(1, lld1.size());
 		assertFalse(lld1.isEmpty());
 
@@ -28,24 +32,23 @@ public class LinkedListDequeTest {
 
 		lld1.addLast("back");
 		assertEquals(3, lld1.size());
-
-		// System.out.println("Printing out deque: ");
-		// lld1.printDeque();
 	}
 
-	/** Adds an item, then removes an item, and ensures that dll is empty afterwards. */
+	/**
+	 * Adds an item, then removes an item, and ensures that dll is empty afterwards.
+	 */
 	@Test
 	public void addRemoveTest() {
 		LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
-		// should be empty 
+		// should be empty
 		assertTrue(lld1.isEmpty());
 
 		lld1.addFirst(10);
-		// should not be empty 
+		// should not be empty
 		assertFalse(lld1.isEmpty());
 
 		lld1.removeFirst();
-		// should be empty 
+		// should be empty
 		assertTrue(lld1.isEmpty());
 	}
 
