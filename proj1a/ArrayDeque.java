@@ -13,6 +13,8 @@
  */
 public class ArrayDeque<T> implements Deque<T> {
     private final static int RESIZE_MULTIPLIER = 2;
+    private final static double USAGE_RATIO_SHRINK_THRESHOLD = 0.25;
+    private final static int USAGE_RATIO_MIN_CAPACITY = 16;
 
     private T[] items;
     private int size;
@@ -21,8 +23,12 @@ public class ArrayDeque<T> implements Deque<T> {
     private int last;  // pos of last element + 1
 
     public ArrayDeque() {
-        capacity = 8;
-        items = (T[]) new Object[capacity];
+        this(8);
+    }
+
+    public ArrayDeque(int capacity) {
+        this.capacity = capacity;
+        items = (T[]) new Object[this.capacity];
         size = 0;
         sentinel = capacity - 1;
         last = 0;
@@ -55,14 +61,14 @@ public class ArrayDeque<T> implements Deque<T> {
     public void addFirst(T item) {
         items[sentinel] = item;
         sentinel = offsetPos(sentinel, -1);
-        size += 1;
+        resize(true);
     }
 
     @Override
     public void addLast(T item) {
         items[last] = item;
         last = offsetPos(last, 1);
-        size += 1;
+        resize(true);
     }
 
     @Override
@@ -71,7 +77,7 @@ public class ArrayDeque<T> implements Deque<T> {
             return null;
         }
         sentinel = offsetPos(sentinel, 1);
-        size -= 1;
+        resize(false);
         return items[sentinel];
     }
 
@@ -81,7 +87,7 @@ public class ArrayDeque<T> implements Deque<T> {
             return null;
         }
         last = offsetPos(last, -1);
-        size -= 1;
+        resize(false);
         return items[last];
     }
 
@@ -107,6 +113,19 @@ public class ArrayDeque<T> implements Deque<T> {
         return array;
     }
 
+    public static <T> ArrayDeque<T> of(T... values) {
+        int numValues = values.length;
+        int capacity = 8;
+        while (capacity <= numValues + 1) {
+            capacity *= RESIZE_MULTIPLIER;
+        }
+        ArrayDeque<T> deque = new ArrayDeque<>(capacity);
+        System.arraycopy(values, 0, deque.items, 0, numValues);
+        deque.size = numValues;
+        deque.last = deque.offsetPos(numValues - 1, 1);
+        return deque;
+    }
+
     /**
      * Returns an index's position in the circular array
      *
@@ -122,7 +141,49 @@ public class ArrayDeque<T> implements Deque<T> {
         return newPos;
     }
 
-    private void resize() {
+    /**
+     * Resizes items array, and expand/shrink accordingly
+     *
+     * Called after adding/removing an item
+     */
+    private void resize(boolean incSizeByOne) {
+        size += (incSizeByOne ? 1 : -1);
         double usageRatio = size / (double) capacity;
+        T[] newItems = items;
+        if (size == capacity - 1) {
+            // Expanding
+            // Chooses the threshold as capacity - 1 to avoid considering too many conditions
+            int newCapacity = capacity * RESIZE_MULTIPLIER;
+            newItems = (T[]) new Object[newCapacity];
+            int posFirstItem = offsetPos(sentinel, 1);
+            if (posFirstItem < last) {
+                System.arraycopy(items, posFirstItem, newItems, posFirstItem, last - posFirstItem);
+                sentinel = newCapacity - 1;
+            } else {
+                int firstPartLen = capacity - posFirstItem;
+                System.arraycopy(items, posFirstItem, newItems, newCapacity - firstPartLen, firstPartLen);
+                System.arraycopy(items, 0, newItems, 0, last);
+                sentinel = newCapacity - firstPartLen - 1;
+            }
+            capacity = newCapacity;
+        } else if (capacity >= USAGE_RATIO_MIN_CAPACITY && usageRatio < USAGE_RATIO_SHRINK_THRESHOLD) {
+            // Shrinking
+            int newCapacity = capacity / RESIZE_MULTIPLIER;
+            newItems = (T[]) new Object[newCapacity];
+            int posFirstItem = offsetPos(sentinel, 1);
+            if (posFirstItem < last) {
+                // Copys to the start of new items
+                System.arraycopy(items, posFirstItem, newItems, 0, last - posFirstItem);
+                sentinel = newCapacity - 1;
+                last = last - posFirstItem;
+            } else {
+                System.arraycopy(items, posFirstItem, newItems, 0, capacity - posFirstItem);
+                System.arraycopy(items, 0, newItems, capacity - posFirstItem, last);
+                sentinel = newCapacity - 1;
+                last = capacity - posFirstItem + last;
+            }
+            capacity = newCapacity;
+        }
+        items = newItems;
     }
 }
