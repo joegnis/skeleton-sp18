@@ -77,8 +77,9 @@ public class ArrayDeque<T> implements Deque<T> {
             return null;
         }
         sentinel = offsetPos(sentinel, 1);
+        T removed = items[sentinel];
         resize(false);
-        return items[sentinel];
+        return removed;
     }
 
     @Override
@@ -87,8 +88,9 @@ public class ArrayDeque<T> implements Deque<T> {
             return null;
         }
         last = offsetPos(last, -1);
+        T removed = items[last];
         resize(false);
-        return items[last];
+        return removed;
     }
 
     @Override

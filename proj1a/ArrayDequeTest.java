@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -91,7 +92,7 @@ public class ArrayDequeTest {
     }
 
     @Test
-    public void removeFirst() {
+    public void removeFirstTest() {
         ArrayDeque<Integer> deque = new ArrayDeque<>();
 
         deque.addLast(3);
@@ -108,7 +109,7 @@ public class ArrayDequeTest {
     }
 
     @Test
-    public void removeLast() {
+    public void removeLastTest() {
         ArrayDeque<Integer> deque = new ArrayDeque<>();
 
         deque.addFirst(3);
@@ -122,6 +123,33 @@ public class ArrayDequeTest {
         assertEquals(0, deque.size());
         assertNull(deque.removeLast());
         assertEquals(0, deque.size());
+    }
+
+    @Test
+    public void removeAfterResizeTest() throws NoSuchFieldException, IllegalAccessException {
+        ArrayDeque<Integer> ad = new ArrayDeque<>();
+        Class<ArrayDeque<Integer>> cls = (Class<ArrayDeque<Integer>>) ad.getClass();
+        Field fieldCapacity = cls.getDeclaredField("capacity");
+        fieldCapacity.setAccessible(true);
+
+        assertEquals(8, fieldCapacity.getInt(ad));
+        for (int i = 7; i >= 0; i--) {
+            ad.addFirst(i);
+        }
+        assertEquals(16, fieldCapacity.getInt(ad));
+        for (int i = 0; i < 8; i++) {
+            assertEquals(i, ad.removeFirst());
+        }
+
+        ad = new ArrayDeque<>();
+        assertEquals(8, fieldCapacity.getInt(ad));
+        for (int i = 0; i < 8; i++) {
+            ad.addFirst(i);
+        }
+        assertEquals(16, fieldCapacity.getInt(ad));
+        for (int i = 0; i < 8; i++) {
+            assertEquals(i, ad.removeLast());
+        }
     }
 
     @Test
