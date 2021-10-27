@@ -29,4 +29,27 @@ public class Palindrome {
             return false;
         }
     }
+
+    /**
+     * Returns true if the word is a palindrome according to the character comparison test provided
+     */
+    public boolean isPalindrome(String word, CharacterComparator cc) {
+        if (word == null) {
+            return false;
+        }
+        return isPalindromeHelper(wordToDeque(word), cc);
+    }
+
+    private boolean isPalindromeHelper(Deque<Character> wordDeque, CharacterComparator cc) {
+        if (wordDeque.size() == 0 || wordDeque.size() == 1) {
+            return true;
+        }
+
+        if (cc.equalChars(wordDeque.removeFirst(), wordDeque.removeLast())) {
+            return isPalindromeHelper(wordDeque, cc);
+        } else {
+            return false;
+        }
+    }
+
 }

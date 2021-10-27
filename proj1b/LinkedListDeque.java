@@ -1,4 +1,5 @@
 // Copied from Project 1A (commit 2859274)
+
 /**
  * Double ended queue implemented by a linked list
  * <p>
@@ -177,6 +178,15 @@ public class LinkedListDeque<T> implements Deque<T> {
         }
 
         return array;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (Node<T> curNode = sentinel.next; curNode != sentinel; curNode = curNode.next) {
+            builder.append(curNode.item.toString());
+        }
+        return String.valueOf(builder);
     }
 
     private static class Node<T> {
