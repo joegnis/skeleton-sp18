@@ -34,7 +34,7 @@ public class TestPalindrome {
                 Map.entry("kakkak", true)
         );
 
-        for (var entry : expected.entrySet()) {
+        for (Map.Entry<String, Boolean> entry : expected.entrySet()) {
             assertEquals(entry.getValue(), palindrome.isPalindrome(entry.getKey()));
         }
     }
