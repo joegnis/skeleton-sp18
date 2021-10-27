@@ -1,12 +1,9 @@
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestFactory;
+import org.junit.Test;
 
 import java.util.Map;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class TestPalindrome {
     // You must use this palindrome, and not instantiate
@@ -23,8 +20,8 @@ public class TestPalindrome {
         assertEquals("persiflage", actual.toString());
     }
 
-    @TestFactory
-    public Stream<DynamicTest> testIsPalindrome() {
+    @Test
+    public void testIsPalindrome() {
         Map<String, Boolean> expected = Map.ofEntries(
                 Map.entry("aka", true),
                 Map.entry("a", true),
@@ -37,9 +34,9 @@ public class TestPalindrome {
                 Map.entry("kakkak", true)
         );
 
-        return expected.entrySet().stream()
-                .map(entry -> DynamicTest.dynamicTest("If " + entry.getKey() + " is palindrome",
-                        () -> assertEquals(entry.getValue(), palindrome.isPalindrome(entry.getKey()))));
+        for (var entry : expected.entrySet()) {
+            assertEquals(entry.getValue(), palindrome.isPalindrome(entry.getKey()));
+        }
     }
 
     @Test
