@@ -223,4 +223,15 @@ public class ArrayListTest {
         aList.remove(aList.size() - 1);
         assertTrue(aList.isEmpty());
     }
+
+    @Test
+    public void setTest() {
+        ArrayList<Integer> aList = ArrayList.of(1, 2, 3, 4, 5);
+        aList.set(0, -1);
+        assertArrayEquals(new Integer[]{-1, 2, 3, 4, 5}, aList.toArray());
+        aList.set(1, -2);
+        assertArrayEquals(new Integer[]{-1, -2, 3, 4, 5}, aList.toArray());
+        aList.set(3, -4);
+        assertArrayEquals(new Integer[]{-1, -2, 3, -4, 5}, aList.toArray());
+    }
 }
