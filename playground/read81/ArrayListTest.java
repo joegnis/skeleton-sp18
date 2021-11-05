@@ -1,6 +1,8 @@
 package read81;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.JUnitException;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
@@ -11,16 +13,39 @@ import java.lang.reflect.Method;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ArrayListTest {
+    private static ArrayList<Integer> intList;
+    private static Class<ArrayList<Integer>> intListClass;
+    private static Field fieldIntListItems;
+    private static Field fieldIntListCapacity;
+
+    @BeforeAll
+    public static void setupAll() {
+        intList = new ArrayList<>();
+        @SuppressWarnings("unchecked") Class<ArrayList<Integer>> cls = (Class<ArrayList<Integer>>) intList.getClass();
+        intListClass = cls;
+
+        try {
+            fieldIntListItems = intListClass.getDeclaredField("items");
+        } catch (NoSuchFieldException e) {
+            throw new JUnitException("Field 'items' not found");
+        }
+        fieldIntListItems.setAccessible(true);
+
+        try {
+            fieldIntListCapacity = intListClass.getDeclaredField("capacity");
+        } catch (NoSuchFieldException e) {
+            throw new JUnitException("Field 'capacity' not found");
+        }
+        fieldIntListCapacity.setAccessible(true);
+    }
+
     @Test
     public void offsetPosTest() throws NoSuchMethodException, NoSuchFieldException, InvocationTargetException, IllegalAccessException {
         ArrayList<Integer> aList = new ArrayList<>();
-        @SuppressWarnings("unchecked") Class<ArrayList<Integer>> cls = (Class<ArrayList<Integer>>) aList.getClass();
-        Method methodOffsetPos = cls.getDeclaredMethod("offsetPos", int.class, int.class);
+        Method methodOffsetPos = intListClass.getDeclaredMethod("offsetPos", int.class, int.class);
         methodOffsetPos.setAccessible(true);
-        Field fieldCapacity = cls.getDeclaredField("capacity");
-        fieldCapacity.setAccessible(true);
 
-        int capacity = fieldCapacity.getInt(aList);
+        int capacity = fieldIntListCapacity.getInt(aList);
         assertEquals(capacity - 1, methodOffsetPos.invoke(aList, 0, -1));
         assertEquals(0, methodOffsetPos.invoke(aList, capacity - 1, 1));
         assertEquals(3, methodOffsetPos.invoke(aList, capacity - 1, capacity * 2 + 4));
@@ -100,25 +125,21 @@ public class ArrayListTest {
     @Test
     public void removeAfterResizeTest() throws NoSuchFieldException, IllegalAccessException {
         ArrayList<Integer> aList = new ArrayList<>();
-        @SuppressWarnings("unchecked") Class<ArrayList<Integer>> cls = (Class<ArrayList<Integer>>) aList.getClass();
-        Field fieldCapacity = cls.getDeclaredField("capacity");
-        fieldCapacity.setAccessible(true);
-
-        assertEquals(8, fieldCapacity.getInt(aList));
+        assertEquals(8, fieldIntListCapacity.getInt(aList));
         for (int i = 7; i >= 0; i--) {
             aList.add(0, i);
         }
-        assertEquals(16, fieldCapacity.getInt(aList));
+        assertEquals(16, fieldIntListCapacity.getInt(aList));
         for (int i = 0; i < 8; i++) {
             assertEquals(i, aList.remove(0));
         }
 
         aList = new ArrayList<>();
-        assertEquals(8, fieldCapacity.getInt(aList));
+        assertEquals(8, fieldIntListCapacity.getInt(aList));
         for (int i = 0; i < 8; i++) {
             aList.add(0, i);
         }
-        assertEquals(16, fieldCapacity.getInt(aList));
+        assertEquals(16, fieldIntListCapacity.getInt(aList));
         for (int i = 0; i < 8; i++) {
             assertEquals(i, aList.remove(aList.size() - 1));
         }
@@ -157,44 +178,36 @@ public class ArrayListTest {
     @Test
     public void resizeExpandTest() throws NoSuchFieldException, IllegalAccessException {
         ArrayList<Integer> aList = ArrayList.of(1, 2, 3, 4, 5, 6);
-        @SuppressWarnings("unchecked") Class<ArrayList<Integer>> cls = (Class<ArrayList<Integer>>) aList.getClass();
-        Field fieldCapacity = cls.getDeclaredField("capacity");
-        fieldCapacity.setAccessible(true);
-
-        assertEquals(8, fieldCapacity.getInt(aList));
+        assertEquals(8, fieldIntListCapacity.getInt(aList));
         aList.add(7);
-        assertEquals(16, fieldCapacity.getInt(aList));
+        assertEquals(16, fieldIntListCapacity.getInt(aList));
         assertArrayEquals(new Integer[]{1, 2, 3, 4, 5, 6, 7}, aList.toArray());
 
         aList = ArrayList.of(1, 2, 3, 4, 5, 6);
         aList.add(0, 0);
-        assertEquals(16, fieldCapacity.getInt(aList));
+        assertEquals(16, fieldIntListCapacity.getInt(aList));
         assertArrayEquals(new Integer[]{0, 1, 2, 3, 4, 5, 6}, aList.toArray());
 
         aList = ArrayList.of(1, 2, 3, 4, 5, 6);
         aList.remove(0);
         aList.add(7);
         aList.add(8);
-        assertEquals(16, fieldCapacity.getInt(aList));
+        assertEquals(16, fieldIntListCapacity.getInt(aList));
         assertArrayEquals(new Integer[]{2, 3, 4, 5, 6, 7, 8}, aList.toArray());
     }
 
     @Test
     public void resizeShrinkTest() throws NoSuchFieldException, IllegalAccessException {
         ArrayList<Integer> aList = ArrayList.of(0, 0, 1, 2, 3, 4, 0, 0, 0);
-        @SuppressWarnings("unchecked") Class<ArrayList<Integer>> cls = (Class<ArrayList<Integer>>) aList.getClass();
-        Field fieldCapacity = cls.getDeclaredField("capacity");
-        fieldCapacity.setAccessible(true);
-
         aList.remove(0);
         aList.remove(0);
         aList.remove(aList.size() - 1);
         aList.remove(aList.size() - 1);
         aList.remove(aList.size() - 1);
-        assertEquals(16, fieldCapacity.getInt(aList));
+        assertEquals(16, fieldIntListCapacity.getInt(aList));
         assertArrayEquals(new Integer[]{1, 2, 3, 4}, aList.toArray());
         aList.remove(aList.size() - 1);
-        assertEquals(8, fieldCapacity.getInt(aList));
+        assertEquals(8, fieldIntListCapacity.getInt(aList));
         assertArrayEquals(new Integer[]{1, 2, 3}, aList.toArray());
 
         aList = ArrayList.of(
@@ -206,12 +219,12 @@ public class ArrayListTest {
         }
         aList.add(6);
         aList.add(8);
-        assertEquals(16, fieldCapacity.getInt(aList));
+        assertEquals(16, fieldIntListCapacity.getInt(aList));
         aList.remove(0);
         aList.remove(0);
         assertArrayEquals(new Integer[]{2, 5, 6, 8}, aList.toArray());
         aList.remove(0);
-        assertEquals(8, fieldCapacity.getInt(aList));
+        assertEquals(8, fieldIntListCapacity.getInt(aList));
         assertArrayEquals(new Integer[]{5, 6, 8}, aList.toArray());
     }
 
@@ -250,20 +263,17 @@ public class ArrayListTest {
         aList.add(4);
         aList.remove(0);
         aList.remove(0);
-        @SuppressWarnings("unchecked") Class<ArrayList<Integer>> cls = (Class<ArrayList<Integer>>) aList.getClass();
-        Field fieldItems = cls.getDeclaredField("items");
-        fieldItems.setAccessible(true);
         assertArrayEquals(new Integer[]{1, 2, 3, 4}, aList.toArray());
-        assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 6, 1, 2}, unpackAsArray(fieldItems.get(aList)));
+        assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 6, 1, 2}, unpackAsArray(fieldIntListItems.get(aList)));
 
         aList.add(1, 10);
         assertArrayEquals(new Integer[]{1, 10, 2, 3, 4}, aList.toArray());
-        assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 1, 10, 2}, unpackAsArray(fieldItems.get(aList)));
+        assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 1, 10, 2}, unpackAsArray(fieldIntListItems.get(aList)));
         aList.remove(0);
         aList.remove(0);
         aList.add(1, 11);
         assertArrayEquals(new Integer[]{2, 11, 3, 4}, aList.toArray());
-        assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 1, 2, 11}, unpackAsArray(fieldItems.get(aList)));
+        assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 1, 2, 11}, unpackAsArray(fieldIntListItems.get(aList)));
     }
 
     private static Object[] unpackAsArray(Object arrObj) {
