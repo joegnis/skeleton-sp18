@@ -145,6 +145,44 @@ public class ArrayListTest {
     }
 
     @Test
+    public void removeNearFrontFromArraySpanAcrossEnd() throws IllegalAccessException {
+        ArrayList<Integer> aList = ArrayList.of(2);
+        assertEquals(2, aList.remove(0));
+        assertArrayEquals(new Integer[]{}, aList.toArray());
+
+        aList.add(0, 2);
+        aList.add(0, 1);
+        aList.add(3);
+        aList.add(4);
+        aList.add(5);
+        assertEquals(3, aList.remove(2));
+        assertArrayEquals(new Integer[]{1, 2, 4, 5}, aList.toArray());
+        assertArrayEquals(new Integer[]{1, 2, 4, 5, null, null, null, 1},
+                unpackAsArray(fieldIntListItems.get(aList)));
+
+        aList.add(0, 7);
+        assertEquals(1, aList.remove(1));
+        assertArrayEquals(new Integer[]{7, 2, 4, 5}, aList.toArray());
+        assertArrayEquals(new Integer[]{7, 2, 4, 5, null, null, null, 7},
+                unpackAsArray(fieldIntListItems.get(aList)));
+
+        aList.add(0, 8);
+        aList.add(0, 9);
+        aList.add(6);
+        aList.add(7);
+        assertEquals(9, aList.remove(0));
+        assertArrayEquals(new Integer[]{8, 7, 2, 4, 5, 6, 7}, aList.toArray());
+
+        assertEquals(7, aList.remove(1));
+        assertArrayEquals(new Integer[]{8, 2, 4, 5, 6, 7}, aList.toArray());
+
+        aList.add(0, 15);
+        aList.add(0, 14);
+        assertEquals(8, aList.remove(2));
+        assertArrayEquals(new Integer[]{14, 15, 2, 4, 5, 6, 7}, aList.toArray());
+    }
+
+    @Test
     public void getTest() {
         ArrayList<Integer> ad1 = new ArrayList<>();
         ad1.add(0, 1);
