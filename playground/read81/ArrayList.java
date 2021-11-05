@@ -116,6 +116,7 @@ public class ArrayList<T> extends AbstractList<T> {
         int lenBefore = index;
         int lenAfter = size - index;
         int realIndex = offsetPos(sentinel, 1 + index);
+        // Shifts the front items or the rear ones depending on which one has fewer items
         if (lenBefore <= lenAfter) {
             if (realIndex > sentinel || realIndex == 0) {
                 // the simpler situation where we only need to shift one part of items array
@@ -150,18 +151,36 @@ public class ArrayList<T> extends AbstractList<T> {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
         }
-        if (index == size - 1) {
-            last = offsetPos(last, -1);
-            T removed = items[last];
-            resize(false);
-            return removed;
-        } else if (index == 0) {
-            sentinel = offsetPos(sentinel, 1);
-            T removed = items[sentinel];
-            resize(false);
-            return removed;
+
+        int lenBefore = index;
+        int lenAfter = size - index - 1;
+        int realIndex = offsetPos(sentinel, 1 + index);
+        T removed = items[realIndex];
+        // Shifts the front items or the rear ones depending on which one has fewer items
+        if (lenBefore <= lenAfter) {
+            int newSentinel = offsetPos(sentinel, 1);
+            if (realIndex > sentinel || sentinel == capacity - 1) {
+                System.arraycopy(items, newSentinel, items, newSentinel + 1, index);
+            } else {
+                System.arraycopy(items, 0, items, 1, realIndex);
+                items[0] = items[capacity - 1];
+                System.arraycopy(items, newSentinel, items, newSentinel + 1, capacity - sentinel - 2);
+            }
+            sentinel = newSentinel;
+        } else {
+            int newLast = offsetPos(last, -1);
+            if (realIndex < last || last == 0) {
+                System.arraycopy(items, newLast, items, offsetPos(newLast, -1), newLast - realIndex);
+            } else {
+                System.arraycopy(items, realIndex + 1, items, realIndex, capacity - realIndex - 1);
+                items[capacity] = items[0];
+                System.arraycopy(items, 1, items, 0, last - 1);
+            }
+            last = newLast;
         }
-        return null;
+
+        resize(false);
+        return removed;
     }
 
     @Override
