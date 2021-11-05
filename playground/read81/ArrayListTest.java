@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.JUnitException;
 
-import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +39,7 @@ public class ArrayListTest {
     }
 
     @Test
-    public void offsetPosTest() throws NoSuchMethodException, NoSuchFieldException, InvocationTargetException, IllegalAccessException {
+    public void offsetPosTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         ArrayList<Integer> aList = new ArrayList<>();
         Method methodOffsetPos = intListClass.getDeclaredMethod("offsetPos", int.class, int.class);
         methodOffsetPos.setAccessible(true);
@@ -123,7 +122,7 @@ public class ArrayListTest {
     }
 
     @Test
-    public void removeAfterResizeTest() throws NoSuchFieldException, IllegalAccessException {
+    public void removeAfterResizeTest() throws IllegalAccessException {
         ArrayList<Integer> aList = new ArrayList<>();
         assertEquals(8, fieldIntListCapacity.getInt(aList));
         for (int i = 7; i >= 0; i--) {
@@ -176,7 +175,7 @@ public class ArrayListTest {
     }
 
     @Test
-    public void resizeExpandTest() throws NoSuchFieldException, IllegalAccessException {
+    public void resizeExpandTest() throws IllegalAccessException {
         ArrayList<Integer> aList = ArrayList.of(1, 2, 3, 4, 5, 6);
         assertEquals(8, fieldIntListCapacity.getInt(aList));
         aList.add(7);
@@ -197,7 +196,7 @@ public class ArrayListTest {
     }
 
     @Test
-    public void resizeShrinkTest() throws NoSuchFieldException, IllegalAccessException {
+    public void resizeShrinkTest() throws IllegalAccessException {
         ArrayList<Integer> aList = ArrayList.of(0, 0, 1, 2, 3, 4, 0, 0, 0);
         aList.remove(0);
         aList.remove(0);
@@ -250,7 +249,7 @@ public class ArrayListTest {
     }
 
     @Test
-    public void testAddToArrayCircleAroundEnd() throws NoSuchFieldException, IllegalAccessException {
+    public void testAddToArrayCircleAroundEnd() throws IllegalAccessException {
         // Build the array
         ArrayList<Integer> aList = ArrayList.of(1, 2, 3, 4, 5, 6);
         aList.remove(0);

@@ -2,7 +2,6 @@ package read81;
 
 import java.util.AbstractList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 /**
  * An array-based list implementation copied from Project 1A
