@@ -265,6 +265,7 @@ public class ArrayListTest {
         assertArrayEquals(new Integer[]{1, 2, 3, 4}, aList.toArray());
         assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 6, 1, 2}, unpackAsArray(fieldIntListItems.get(aList)));
 
+        // When inserting to the first half of the array
         aList.add(0, 8);
         assertArrayEquals(new Integer[]{8, 1, 2, 3, 4}, aList.toArray());
         assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 8, 1, 2}, unpackAsArray(fieldIntListItems.get(aList)));
@@ -279,6 +280,32 @@ public class ArrayListTest {
         aList.add(1, 11);
         assertArrayEquals(new Integer[]{2, 11, 3, 4}, aList.toArray());
         assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 1, 2, 11}, unpackAsArray(fieldIntListItems.get(aList)));
+
+        // When lenBefore == lenAfter
+        aList.add(2, 5);
+        assertArrayEquals(new Integer[]{2, 11, 5, 3, 4}, aList.toArray());
+        assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 2, 11, 5}, unpackAsArray(fieldIntListItems.get(aList)));
+
+        // When inserting to the last half of the array
+        aList.add(4, 9);
+        assertArrayEquals(new Integer[]{2, 11, 5, 3, 9, 4}, aList.toArray());
+        assertArrayEquals(new Integer[]{3, 9, 4, 4, 5, 2, 11, 5}, unpackAsArray(fieldIntListItems.get(aList)));
+
+        aList.remove(0);
+        aList.add(5, 44);  // adds to rear
+        assertArrayEquals(new Integer[]{11, 5, 3, 9, 4, 44}, aList.toArray());
+        assertArrayEquals(new Integer[]{3, 9, 4, 44, 5, 2, 11, 5}, unpackAsArray(fieldIntListItems.get(aList)));
+
+        aList.remove(aList.size() - 1);
+        aList.remove(aList.size() - 1);
+        aList.remove(aList.size() - 1);
+        aList.add(0, 3);
+        aList.add(0, 4);
+        aList.add(0, 5);
+        aList.add(0, 6);
+        assertArrayEquals(new Integer[]{6, 5, 4, 3, 11, 5, 3}, aList.toArray());
+        aList.add(5, 4);
+        assertArrayEquals(new Integer[]{6, 5, 4, 3, 11, 4, 5, 3}, aList.toArray());
     }
 
     @Test

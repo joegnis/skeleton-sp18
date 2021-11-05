@@ -113,20 +113,35 @@ public class ArrayList<T> extends AbstractList<T> {
             throw new IndexOutOfBoundsException();
         }
 
+        int lenBefore = index;
+        int lenAfter = size - index;
         int realIndex = offsetPos(sentinel, 1 + index);
-        if (realIndex > sentinel || realIndex == 0) {
-            // the simpler situation where we only need to shift one part of items array
-            int newPos = offsetPos(realIndex, -1);
-            System.arraycopy(items, offsetPos(sentinel, 1), items, sentinel, index);
-            items[newPos] = element;
+        if (lenBefore <= lenAfter) {
+            if (realIndex > sentinel || realIndex == 0) {
+                // the simpler situation where we only need to shift one part of items array
+                int newPos = offsetPos(realIndex, -1);
+                System.arraycopy(items, offsetPos(sentinel, 1), items, sentinel, index);
+                items[newPos] = element;
+            } else {
+                System.arraycopy(items, sentinel + 1, items, sentinel, capacity - sentinel - 1);
+                items[capacity - 1] = items[0];
+                System.arraycopy(items, 1, items, 0, realIndex - 1);
+                items[realIndex - 1] = element;
+            }
+            sentinel = offsetPos(sentinel, -1);
         } else {
-            System.arraycopy(items, sentinel + 1, items, sentinel, capacity - sentinel - 1);
-            items[capacity - 1] = items[0];
-            System.arraycopy(items, 1, items, 0, realIndex - 1);
-            items[realIndex - 1] = element;
+            if (realIndex <= last) {
+                // the simpler situation where we only need to shift one part of items array
+                System.arraycopy(items, realIndex, items, realIndex + 1, last - realIndex);
+            } else {
+                System.arraycopy(items, 0, items, 1, last);
+                items[0] = items[capacity - 1];
+                System.arraycopy(items, realIndex, items, realIndex + 1, capacity - realIndex - 1);
+            }
+            items[realIndex] = element;
+            last = offsetPos(last, 1);
         }
 
-        sentinel = offsetPos(sentinel, -1);
         resize(true);
     }
 
