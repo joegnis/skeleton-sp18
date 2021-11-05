@@ -3,6 +3,7 @@ package read81;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -233,5 +234,43 @@ public class ArrayListTest {
         assertArrayEquals(new Integer[]{-1, -2, 3, 4, 5}, aList.toArray());
         aList.set(3, -4);
         assertArrayEquals(new Integer[]{-1, -2, 3, -4, 5}, aList.toArray());
+    }
+
+    @Test
+    public void testAddToArrayCircleAroundEnd() throws NoSuchFieldException, IllegalAccessException {
+        // Build the array
+        ArrayList<Integer> aList = ArrayList.of(1, 2, 3, 4, 5, 6);
+        aList.remove(0);
+        aList.remove(0);
+        aList.add(1);
+        aList.add(2);
+        aList.remove(0);
+        aList.remove(0);
+        aList.add(3);
+        aList.add(4);
+        aList.remove(0);
+        aList.remove(0);
+        @SuppressWarnings("unchecked") Class<ArrayList<Integer>> cls = (Class<ArrayList<Integer>>) aList.getClass();
+        Field fieldItems = cls.getDeclaredField("items");
+        fieldItems.setAccessible(true);
+        assertArrayEquals(new Integer[]{1, 2, 3, 4}, aList.toArray());
+        assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 6, 1, 2}, unpackAsArray(fieldItems.get(aList)));
+
+        aList.add(1, 10);
+        assertArrayEquals(new Integer[]{1, 10, 2, 3, 4}, aList.toArray());
+        assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 1, 10, 2}, unpackAsArray(fieldItems.get(aList)));
+        aList.remove(0);
+        aList.remove(0);
+        aList.add(1, 11);
+        assertArrayEquals(new Integer[]{2, 11, 3, 4}, aList.toArray());
+        assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 1, 2, 11}, unpackAsArray(fieldItems.get(aList)));
+    }
+
+    private static Object[] unpackAsArray(Object arrObj) {
+        Object[] array = new Object[Array.getLength(arrObj)];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = Array.get(arrObj, i);
+        }
+        return array;
     }
 }

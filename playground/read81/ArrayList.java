@@ -6,10 +6,17 @@ import java.util.LinkedList;
 
 /**
  * An array-based list implementation copied from Project 1A
+ *
+ * Invariants:
+ * - sentinel item is one index before the first item
+ * - last item is one index after the last item
+ * - sentinel != last before or after an operation
+ * - at least two empty space in the internal array before or after an operation
  */
 public class ArrayList<T> extends AbstractList<T> {
     private static final int RESIZE_MULTIPLIER = 2;
     private static final double USAGE_RATIO_SHRINK_THRESHOLD = 0.25;
+    private static final int INIT_CAPACITY = 8;
     private static final int USAGE_RATIO_MIN_CAPACITY = 16;
 
     private T[] items;
@@ -19,12 +26,12 @@ public class ArrayList<T> extends AbstractList<T> {
     private int last;  // pos of last element + 1
 
     ArrayList() {
-        this(8);
+        this(INIT_CAPACITY);
     }
 
     ArrayList(Collection<? extends T> other) {
         int numValues = other.size();
-        int capacity = 8;
+        int capacity = INIT_CAPACITY;
         while (capacity <= numValues + 1) {
             capacity *= RESIZE_MULTIPLIER;
         }
@@ -95,21 +102,33 @@ public class ArrayList<T> extends AbstractList<T> {
 
     @Override
     public boolean add(T t) {
-        add(size, t);
+        items[last] = t;
+        last = offsetPos(last, 1);
+        resize(true);
         return true;
     }
 
     @Override
     public void add(int index, T element) {
-        if (index == 0) {
-            items[sentinel] = element;
-            sentinel = offsetPos(sentinel, -1);
-            resize(true);
-        } else if (index == size) {
-            items[last] = element;
-            last = offsetPos(last, 1);
-            resize(true);
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
         }
+
+        int realIndex = offsetPos(sentinel, 1 + index);
+        if (realIndex > sentinel || realIndex == 0) {
+            // the simpler situation where we only need to shift one part of items array
+            int newPos = offsetPos(realIndex, -1);
+            System.arraycopy(items, offsetPos(sentinel, 1), items, sentinel, index);
+            items[newPos] = element;
+        } else {
+            System.arraycopy(items, sentinel + 1, items, sentinel, capacity - sentinel - 1);
+            items[capacity - 1] = items[0];
+            System.arraycopy(items, 1, items, 0, realIndex - 1);
+            items[realIndex - 1] = element;
+        }
+
+        sentinel = offsetPos(sentinel, -1);
+        resize(true);
     }
 
     @Override
