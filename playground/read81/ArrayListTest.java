@@ -296,6 +296,7 @@ public class ArrayListTest {
         assertArrayEquals(new Integer[]{11, 5, 3, 9, 4, 44}, aList.toArray());
         assertArrayEquals(new Integer[]{3, 9, 4, 44, 5, 2, 11, 5}, unpackAsArray(fieldIntListItems.get(aList)));
 
+        // Shifts two parts to the right after inserting
         aList.remove(aList.size() - 1);
         aList.remove(aList.size() - 1);
         aList.remove(aList.size() - 1);
@@ -306,6 +307,11 @@ public class ArrayListTest {
         assertArrayEquals(new Integer[]{6, 5, 4, 3, 11, 5, 3}, aList.toArray());
         aList.add(5, 4);
         assertArrayEquals(new Integer[]{6, 5, 4, 3, 11, 4, 5, 3}, aList.toArray());
+        aList.add(0, 1);
+        aList.add(0, 1);
+        aList.add(0, 1);
+        aList.add(6, -5);
+        assertArrayEquals(new Integer[]{1, 1, 1, 6, 5, 4, -5, 3, 11, 4, 5, 3}, aList.toArray());
     }
 
     @Test
@@ -323,14 +329,35 @@ public class ArrayListTest {
         aList.add(1, 4);
         assertArrayEquals(new Integer[]{1, 4, 3, 4, 5}, aList.toArray());
         assertArrayEquals(new Integer[]{1, 4, 3, 4, 5, null, null, null}, unpackAsArray(fieldIntListItems.get(aList)));
+
+        aList.add(4, -4);
+        assertArrayEquals(new Integer[]{1, 4, 3, 4, -4, 5}, aList.toArray());
+        assertArrayEquals(new Integer[]{1, 4, 3, 4, -4, 5, null, null}, unpackAsArray(fieldIntListItems.get(aList)));
+
+        aList.add(6, -5);
+        assertArrayEquals(new Integer[]{1, 4, 3, 4, -4, 5, -5}, aList.toArray());
     }
 
     @Test
     public void testAddToArrayEdgeCases() throws IllegalAccessException {
         ArrayList<Integer> aList = ArrayList.of(1, 2, 3, 4);
+        // realIndex == 0
         aList.add(0, -1);
         assertArrayEquals(new Integer[]{-1, 1, 2, 3, 4}, aList.toArray());
         assertArrayEquals(new Integer[]{1, 2, 3, 4, null, null, null, -1}, unpackAsArray(fieldIntListItems.get(aList)));
+
+        // Shifts two parts to the left after inserting
+        aList.add(2, -3);
+        assertArrayEquals(new Integer[]{-1, 1, -3, 2, 3, 4}, aList.toArray());
+        assertArrayEquals(new Integer[]{-3, 2, 3, 4, null, null, -1, 1}, unpackAsArray(fieldIntListItems.get(aList)));
+        aList.add(3, -4);
+        assertArrayEquals(new Integer[]{-1, 1, -3, -4, 2, 3, 4}, aList.toArray());
+
+        // Index out of bound
+        assertThrows(IndexOutOfBoundsException.class, () -> aList.add(-1, 100));
+        assertThrows(IndexOutOfBoundsException.class, () -> aList.add(-5, 100));
+        assertThrows(IndexOutOfBoundsException.class, () -> aList.add(aList.size() + 1, 100));
+        assertThrows(IndexOutOfBoundsException.class, () -> aList.add(aList.size() + 10, 100));
     }
 
     private static Object[] unpackAsArray(Object arrObj) {
