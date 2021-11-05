@@ -265,14 +265,45 @@ public class ArrayListTest {
         assertArrayEquals(new Integer[]{1, 2, 3, 4}, aList.toArray());
         assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 6, 1, 2}, unpackAsArray(fieldIntListItems.get(aList)));
 
+        aList.add(0, 8);
+        assertArrayEquals(new Integer[]{8, 1, 2, 3, 4}, aList.toArray());
+        assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 8, 1, 2}, unpackAsArray(fieldIntListItems.get(aList)));
+
+        aList.remove(0);
         aList.add(1, 10);
         assertArrayEquals(new Integer[]{1, 10, 2, 3, 4}, aList.toArray());
         assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 1, 10, 2}, unpackAsArray(fieldIntListItems.get(aList)));
+
         aList.remove(0);
         aList.remove(0);
         aList.add(1, 11);
         assertArrayEquals(new Integer[]{2, 11, 3, 4}, aList.toArray());
         assertArrayEquals(new Integer[]{3, 4, 3, 4, 5, 1, 2, 11}, unpackAsArray(fieldIntListItems.get(aList)));
+    }
+
+    @Test
+    public void testAddToArrayInMiddle() throws IllegalAccessException {
+        ArrayList<Integer> aList = ArrayList.of(1, 2, 3, 4, 5);
+        aList.remove(0);
+        aList.remove(0);
+        assertArrayEquals(new Integer[]{3, 4, 5}, aList.toArray());
+        assertArrayEquals(new Integer[]{1, 2, 3, 4, 5, null, null, null}, unpackAsArray(fieldIntListItems.get(aList)));
+
+        aList.add(0, 1);
+        assertArrayEquals(new Integer[]{1, 3, 4, 5}, aList.toArray());
+        assertArrayEquals(new Integer[]{1, 1, 3, 4, 5, null, null, null}, unpackAsArray(fieldIntListItems.get(aList)));
+
+        aList.add(1, 4);
+        assertArrayEquals(new Integer[]{1, 4, 3, 4, 5}, aList.toArray());
+        assertArrayEquals(new Integer[]{1, 4, 3, 4, 5, null, null, null}, unpackAsArray(fieldIntListItems.get(aList)));
+    }
+
+    @Test
+    public void testAddToArrayEdgeCases() throws IllegalAccessException {
+        ArrayList<Integer> aList = ArrayList.of(1, 2, 3, 4);
+        aList.add(0, -1);
+        assertArrayEquals(new Integer[]{-1, 1, 2, 3, 4}, aList.toArray());
+        assertArrayEquals(new Integer[]{1, 2, 3, 4, null, null, null, -1}, unpackAsArray(fieldIntListItems.get(aList)));
     }
 
     private static Object[] unpackAsArray(Object arrObj) {
