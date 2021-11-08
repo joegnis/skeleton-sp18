@@ -48,6 +48,7 @@ public class ArrayList<T> extends AbstractList<T> {
         last = offsetPos(numValues - 1, 1);
     }
 
+    @SafeVarargs
     public static <T> ArrayList<T> of(T... values) {
         int numValues = values.length;
         int capacity = 8;
