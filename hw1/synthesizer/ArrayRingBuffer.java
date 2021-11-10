@@ -86,8 +86,6 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         return rb[first];
     }
 
-    // TODO: When you get to part 5, implement the needed code to support iteration.
-
     private int offsetIndex(int index, int offset) {
         int realIndex = (index + offset) % capacity;
         if (realIndex < 0) {
