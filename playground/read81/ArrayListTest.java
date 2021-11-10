@@ -398,6 +398,30 @@ public class ArrayListTest {
         assertThrows(IndexOutOfBoundsException.class, () -> aList.add(aList.size() + 10, 100));
     }
 
+    @Test
+    public void testRemoveWhenShiftLeftAndPosBiggerThanLast() throws IllegalAccessException {
+        ArrayList<Integer> aList = ArrayList.of(0, 0, 0, 0, 1, 2);
+        aList.remove(0);
+        aList.remove(0);
+        aList.remove(0);
+        aList.remove(0);
+        aList.add(3);
+        aList.add(4);
+        aList.add(5);
+        aList.add(6);
+        assertArrayEquals(new Integer[]{1, 2, 3, 4, 5, 6}, aList.toArray());
+        assertArrayEquals(new Integer[]{5, 6, 0, 0, 1, 2, 3, 4}, unpackAsArray(fieldIntListItems.get(aList)));
+
+        assertEquals(4, aList.remove(3));
+        assertArrayEquals(new Integer[]{1, 2, 3, 5, 6}, aList.toArray());
+
+        aList.add(7);
+        aList.add(0, 0);
+        aList.add(0, -1);
+        assertEquals(3, aList.remove(4));
+        assertArrayEquals(new Integer[]{-1, 0, 1, 2, 5, 6, 7}, aList.toArray());
+    }
+
     private static Object[] unpackAsArray(Object arrObj) {
         Object[] array = new Object[Array.getLength(arrObj)];
         for (int i = 0; i < array.length; i++) {

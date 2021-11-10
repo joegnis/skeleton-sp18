@@ -174,7 +174,7 @@ public class ArrayList<T> extends AbstractList<T> {
                 System.arraycopy(items, newLast, items, offsetPos(newLast, -1), newLast - realIndex);
             } else {
                 System.arraycopy(items, realIndex + 1, items, realIndex, capacity - realIndex - 1);
-                items[capacity] = items[0];
+                items[capacity - 1] = items[0];
                 System.arraycopy(items, 1, items, 0, last - 1);
             }
             last = newLast;
