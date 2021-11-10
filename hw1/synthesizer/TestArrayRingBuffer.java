@@ -42,6 +42,21 @@ public class TestArrayRingBuffer {
     public void testPeek() {
         ArrayRingBuffer<Integer> rb = new ArrayRingBuffer<>(5);
         assertThrows(NoSuchElementException.class, rb::peek);
+        rb.enqueue(0);
+        try {
+            rb.peek();
+        } catch (RuntimeException re) {
+            fail();
+        }
+
+        rb.dequeue();
+        assertThrows(NoSuchElementException.class, rb::peek);
+        rb.enqueue(0);
+        try {
+            rb.peek();
+        } catch (RuntimeException re) {
+            fail();
+        }
     }
 
     @Test
