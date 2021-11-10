@@ -1,5 +1,8 @@
 package synthesizer;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     /* Index for the next dequeue or peek. */
     private int first;            // index for the next dequeue or peek
@@ -7,6 +10,29 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     private int last;
     /* Array for storing the buffer data. */
     private T[] rb;
+
+    private class BufferIterator implements Iterator<T> {
+        private int currentIndex;
+
+        BufferIterator() {
+            currentIndex = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex < fillCount;
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            T n = rb[offsetIndex(first, currentIndex)];
+            currentIndex += 1;
+            return n;
+        }
+    }
 
     /**
      * Create a new ArrayRingBuffer with the given capacity.
@@ -68,5 +94,10 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
             realIndex += capacity;
         }
         return realIndex;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new BufferIterator();
     }
 }
