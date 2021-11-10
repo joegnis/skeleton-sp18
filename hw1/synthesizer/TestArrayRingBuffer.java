@@ -17,7 +17,6 @@ public class TestArrayRingBuffer {
     public void testEnqueue() {
         int capacity = 10;
         ArrayRingBuffer<Integer> rb = new ArrayRingBuffer<>(capacity);
-        assertNull(rb.peek());
         for (int i = 0; i < capacity; i++) {
             rb.enqueue(i);
             assertEquals(Integer.valueOf(0), rb.peek());
@@ -42,7 +41,7 @@ public class TestArrayRingBuffer {
     @Test
     public void testPeek() {
         ArrayRingBuffer<Integer> rb = new ArrayRingBuffer<>(5);
-        assertNull(rb.peek());
+        assertThrows(NoSuchElementException.class, rb::peek);
     }
 
     @Test

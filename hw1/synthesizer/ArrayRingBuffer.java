@@ -83,6 +83,9 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
      */
     @Override
     public T peek() {
+        if (fillCount == 0) {
+            throw new NoSuchElementException();
+        }
         return rb[first];
     }
 
