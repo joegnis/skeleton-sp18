@@ -31,6 +31,7 @@ public class TestArrayRingBuffer {
             rb.enqueue(i);
         }
         for (int i = 0; i < capacity; i++) {
+            assertEquals(Integer.valueOf(i), rb.peek());
             assertEquals(Integer.valueOf(i), rb.dequeue());
         }
     }
