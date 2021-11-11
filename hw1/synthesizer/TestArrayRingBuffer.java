@@ -17,10 +17,12 @@ public class TestArrayRingBuffer {
     public void testEnqueue() {
         int capacity = 10;
         ArrayRingBuffer<Integer> rb = new ArrayRingBuffer<>(capacity);
+        assertEquals(0, rb.fillCount());
         for (int i = 0; i < capacity; i++) {
             rb.enqueue(i);
             assertEquals(Integer.valueOf(0), rb.peek());
         }
+        assertEquals(10, rb.fillCount());
         assertThrows(RuntimeException.class, () -> rb.enqueue(13));
     }
 

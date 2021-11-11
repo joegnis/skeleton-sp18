@@ -45,6 +45,9 @@ public class GuitarString {
 
     /* Return the double at the front af the buffer. */
     public double sample() {
+        if (buffer.fillCount() == 0) {
+            return 0.0;
+        }
         return buffer.peek();
     }
 }
