@@ -13,6 +13,20 @@ public class HexWorld {
     private final int tilesHeight;
     private final TERenderer renderer;
 
+    public static class Position {
+        public int x;
+        public int y;
+
+        public Position(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public static Position of(int x, int y) {
+            return new Position(x, y);
+        }
+    }
+
     public HexWorld(int width, int height) {
         tilesWidth = width;
         tilesHeight = height;
@@ -34,17 +48,16 @@ public class HexWorld {
     /**
      * Adds a hexagon to the tiles
      *
-     * @param startX the x coordinate of the bottom-left corner of the smallest rectangle that contains the hexagon
-     * @param startY the y coordinate of the bottom-left corner of the smallest rectangle that contains the hexagon
-     * @param size   the number of tiles of its first row
+     * @param bottomLeft the position of the bottom-left corner of the smallest rectangle that contains the hexagon
+     * @param size       the number of tiles of its first row
      */
-    public void addHexagon(final int startX, final int startY, final int size, final TETile tileToFill) {
-        addHexagonHalf(startX, startY, size, tileToFill, true);
-        addHexagonHalf(startX, startY, size, tileToFill, false);
+    public void addHexagon(final Position bottomLeft, final int size, final TETile tileToFill) {
+        addHexagonHalf(bottomLeft, size, tileToFill, true);
+        addHexagonHalf(bottomLeft, size, tileToFill, false);
     }
 
-    private void addHexagonHalf(final int startX, final int startY,
-                                final int size, final TETile tileToFill, boolean bottomHalf) {
+    private void addHexagonHalf(final Position bottomLeft, final int size,
+                                final TETile tileToFill, boolean bottomHalf) {
         // size-1-0 -> size-1 + size
         // size-1-1 -> size-2 + size+2*1
         // size-1-2 -> size-3 + size+2*2
@@ -58,16 +71,16 @@ public class HexWorld {
         for (int relY = 0; relY < size; relY++) {
             int y;
             if (bottomHalf) {
-                y = startY + relY;
+                y = bottomLeft.y + relY;
             } else {
                 // x coordinates are the same, we just need to flip ys
-                y = startY + 2 * size - 1 - relY;
+                y = bottomLeft.y + 2 * size - 1 - relY;
             }
             if (y > tilesWidth) {
                 break;
             }
             for (int relX = size - 1 - relY; relX < (size - 1 - relY) + size + 2 * relY; relX++) {
-                int x = startX + relX;
+                int x = bottomLeft.x + relX;
                 if (x > tilesHeight) {
                     break;  // continues to the next row
                 }
@@ -78,7 +91,7 @@ public class HexWorld {
 
     public static void main(String[] args) {
         HexWorld world = new HexWorld(50, 50);
-        world.addHexagon(25, 25, 5, Tileset.FLOWER);
+        world.addHexagon(Position.of(25, 25), 5, Tileset.FLOWER);
         world.draw();
     }
 }
