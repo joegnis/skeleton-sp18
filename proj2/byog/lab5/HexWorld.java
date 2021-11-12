@@ -22,6 +22,11 @@ public class HexWorld {
             this.y = y;
         }
 
+        public Position(Position other) {
+            x = other.x;
+            y = other.y;
+        }
+
         public static Position of(int x, int y) {
             return new Position(x, y);
         }
@@ -54,6 +59,15 @@ public class HexWorld {
     public void addHexagon(final Position bottomLeft, final int size, final TETile tileToFill) {
         addHexagonHalf(bottomLeft, size, tileToFill, true);
         addHexagonHalf(bottomLeft, size, tileToFill, false);
+    }
+
+    private void addVerticalRowOfHexagonsFromBottom(final Position startPosition, int sizeHexagon, int numHexagons,
+                                                   final TETile tileToFill) {
+        Position pos = new Position(startPosition);
+        for (int i = 0; i < numHexagons; i++) {
+            addHexagon(pos, sizeHexagon, tileToFill);
+            pos.y += 2 * sizeHexagon;
+        }
     }
 
     private void addHexagonHalf(final Position bottomLeft, final int size,
@@ -91,7 +105,12 @@ public class HexWorld {
 
     public static void main(String[] args) {
         HexWorld world = new HexWorld(50, 50);
-        world.addHexagon(Position.of(25, 25), 5, Tileset.FLOWER);
+        world.addHexagon(Position.of(30, 30), 5, Tileset.WATER);
+        world.addVerticalRowOfHexagonsFromBottom(Position.of(0, 6), 3, 3, Tileset.GRASS);
+        world.addVerticalRowOfHexagonsFromBottom(Position.of(5, 3), 3, 4, Tileset.FLOWER);
+        world.addVerticalRowOfHexagonsFromBottom(Position.of(10, 0), 3, 5, Tileset.MOUNTAIN);
+        world.addVerticalRowOfHexagonsFromBottom(Position.of(15, 3), 3, 4, Tileset.TREE);
+        world.addVerticalRowOfHexagonsFromBottom(Position.of(20, 6), 3, 3, Tileset.SAND);
         world.draw();
     }
 }
