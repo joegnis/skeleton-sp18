@@ -1,9 +1,9 @@
 package lab9tester;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
 import lab9.MyHashMap;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests by Brendan Hu, Spring 2015, revised for 2018 by Josh Hug
@@ -127,7 +127,4 @@ public class TestMyHashMap {
         assertEquals(studentIDs.get("evil alan"), studentIDs.get("alan"));
     }
 
-    public static void main(String[] args) {
-        jh61b.junit.TestRunner.runTests(TestMyHashMap.class);
-    }
 }
