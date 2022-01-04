@@ -48,11 +48,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             return null;
         }
 
-        if (p.key.compareTo(key) == 0) {
+        int cmp = key.compareTo(p.key);
+        if (cmp == 0) {
             return p.value;
-        }
-
-        if (key.compareTo(p.key) < 0) {
+        } else if (cmp < 0) {
             return getHelper(key, p.left);
         } else {
             return getHelper(key, p.right);
@@ -76,7 +75,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             return new Node(key, value);
         }
 
-        if (key.compareTo(p.key) == 0) {
+        int cmp = key.compareTo(p.key);
+        if (cmp == 0) {
             p.value = value;
         } else if (key.compareTo(p.key) < 0) {
             p.left = putHelper(key, value, p.left);
