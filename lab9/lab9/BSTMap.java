@@ -1,9 +1,6 @@
 package lab9;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Implementation of interface Map61B with BST as core data structure.
@@ -138,7 +135,11 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     /* Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        Set<K> set = new HashSet<>();
+        for (K key : this) {
+            set.add(key);
+        }
+        return set;
     }
 
     /** Removes KEY from the tree if present

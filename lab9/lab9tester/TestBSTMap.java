@@ -3,8 +3,10 @@ package lab9tester;
 import lab9.BSTMap;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -104,6 +106,18 @@ public class TestBSTMap {
 
         assertFalse(iter.hasNext());
         assertThrows(NoSuchElementException.class, iter::next);
+    }
+
+    @Test
+    public void keySetTest() {
+        BSTMap<Integer, Integer> b = new BSTMap<>();
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < 455; i++) {
+            b.put(i, 1 + i);
+            set.add(i);
+        }
+
+        assertEquals(set, b.keySet());
     }
 
 }
