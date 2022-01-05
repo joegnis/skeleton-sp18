@@ -1,7 +1,9 @@
 package lab9;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * Implementation of interface Map61B with BST as core data structure.
@@ -103,6 +105,36 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
 
+    private class BSTMapIterator implements Iterator<K> {
+        private final Stack<Node> nodeStack;
+        private Node curNode;
+
+        public BSTMapIterator(Node root) {
+            nodeStack = new Stack<>();
+            curNode = root;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return curNode != null || !nodeStack.isEmpty();
+        }
+
+        @Override
+        public K next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            while (curNode != null) {
+                nodeStack.push(curNode);
+                curNode = curNode.left;
+            }
+            Node nextNode = nodeStack.pop();
+            curNode = nextNode.right;
+
+            return nextNode.key;
+        }
+    }
+
     /* Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
@@ -129,6 +161,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     @Override
     public Iterator<K> iterator() {
-        throw new UnsupportedOperationException();
+        return new BSTMapIterator(root);
     }
 }

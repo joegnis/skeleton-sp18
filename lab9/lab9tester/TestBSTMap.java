@@ -3,6 +3,9 @@ package lab9tester;
 import lab9.BSTMap;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -84,6 +87,23 @@ public class TestBSTMap {
         b.put("hi", 1);
         assertTrue(b.containsKey("hi"));
         assertTrue(b.get("hi") != null);
+    }
+
+    @Test
+    public void iteratorTest() {
+        BSTMap<Integer, Integer> b = new BSTMap<>();
+        for (int i = 0; i < 455; i++) {
+            b.put(i, 1 + i);
+        }
+
+        Iterator<Integer> iter = b.iterator();
+        for (int i = 0; i < 455; i++) {
+            assertTrue(iter.hasNext());
+            assertEquals(i, iter.next());
+        }
+
+        assertFalse(iter.hasNext());
+        assertThrows(NoSuchElementException.class, iter::next);
     }
 
 }
