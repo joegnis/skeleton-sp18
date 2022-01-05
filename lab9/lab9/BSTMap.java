@@ -1,6 +1,7 @@
 package lab9;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Implementation of interface Map61B with BST as core data structure.
@@ -42,14 +43,14 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     /** Returns the value mapped to by KEY in the subtree rooted in P.
      *  or null if this map contains no mapping for the key.
      */
-    private V getHelper(K key, Node p) {
+    private Node getHelper(K key, Node p) {
         if (p == null) {
             return null;
         }
 
         int cmp = key.compareTo(p.key);
         if (cmp == 0) {
-            return p.value;
+            return p;
         } else if (cmp < 0) {
             return getHelper(key, p.left);
         } else {
@@ -62,7 +63,9 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        return getHelper(key, root);
+        Node target = getHelper(key, root);
+        if (target == null) return null;
+        return target.value;
     }
 
     /** Returns a BSTMap rooted in p with (KEY, VALUE) added as a key-value mapping.
@@ -148,8 +151,48 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        Node toRemove = getHelper(key, root);
+        if (toRemove == null) return null;
+        V valueToRemove = toRemove.value;
+
+        root = searchAndRemove(root, key);
+        return valueToRemove;
     }
+
+    private Node searchAndRemove(Node p, K key) {
+        int cmp = key.compareTo(p.key);
+        if (cmp < 0) {
+            p.left = searchAndRemove(p.left, key);
+        } else if (cmp > 0) {
+            p.right = searchAndRemove(p.right, key);
+        } else {
+            // leaf
+            if (p.left == null && p.right == null) {
+                return null;
+            }
+
+            // only child
+            if (p.left == null || p.right == null) {
+                return p.left != null ? p.left : p.right;
+            }
+
+            // two children
+            Node successor = p.right;
+            while (successor.left != null) {
+                successor = successor.left;
+            }
+            V pVal = p.value;
+            p.key = successor.key;
+            p.value = successor.value;
+            successor.key = key;
+            successor.value = pVal;
+
+            p.right = searchAndRemove(p.right, key);
+        }
+
+        return p;
+    }
+
 
     /** Removes the key-value entry for the specified key only if it is
      *  currently mapped to the specified value.  Returns the VALUE removed,

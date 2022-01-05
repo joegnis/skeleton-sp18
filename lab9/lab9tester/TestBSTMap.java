@@ -120,4 +120,46 @@ public class TestBSTMap {
         assertEquals(set, b.keySet());
     }
 
+    @Test
+    public void removeTest() {
+        BSTMap<String, Integer> bst = new BSTMap<>();
+        bst.put("hi", 1);
+        assertEquals(1, bst.remove("hi"));
+        assertNull(bst.get("hi"));
+
+        // leaf
+        bst.clear();
+        bst.put("hi6", 6);
+        bst.put("hi4", 4);
+        bst.put("hi8", 8);
+        assertEquals(4, bst.remove("hi4"));
+        assertNull(bst.get("hi4"));
+
+        // two children simple
+        bst.clear();
+        bst.put("hi6", 6);
+        bst.put("hi4", 4);
+        bst.put("hi8", 8);
+        assertEquals(6, bst.remove("hi6"));
+        assertNull(bst.get("hi6"));
+
+        // two children 2
+        bst.clear();
+        bst.put("hi33", 33);
+        bst.put("hi25", 25);
+        bst.put("hi40", 40);
+        bst.put("hi34", 34);
+        assertEquals(33, bst.remove("hi33"));
+        assertNull(bst.get("hi33"));
+
+        // only child
+        bst.clear();
+        bst.put("hi33", 33);
+        bst.put("hi25", 25);
+        bst.put("hi40", 40);
+        bst.put("hi34", 34);
+        assertEquals(40, bst.remove("hi40"));
+        assertNull(bst.get("hi40"));
+    }
+
 }
