@@ -124,6 +124,7 @@ public class TestBSTMap {
     public void removeTest() {
         BSTMap<String, Integer> bst = new BSTMap<>();
         bst.put("hi", 1);
+        assertNull(bst.remove("hi1"));
         assertEquals(1, bst.remove("hi"));
         assertNull(bst.get("hi"));
 
@@ -133,6 +134,7 @@ public class TestBSTMap {
         bst.put("hi4", 4);
         bst.put("hi8", 8);
         assertEquals(4, bst.remove("hi4"));
+        assertNull(bst.remove("hi4"));
         assertNull(bst.get("hi4"));
 
         // two children simple
