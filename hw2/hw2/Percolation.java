@@ -6,14 +6,24 @@ public class Percolation {
     private final boolean[][] opened;
     private final int sideLength;
     private final WeightedQuickUnionUF unionFind;
+    private final int posVirtualTop;
+    private final int posVirtualBtm;
     private int numOpened;
 
     public Percolation(int N) {
         // create N-by-N grid, with all sites initially blocked
         this.opened = new boolean[N][N];
         this.sideLength = N;
-        this.unionFind = new WeightedQuickUnionUF(flattenLocation(N, N));
+        int numSites = flattenLocation(N, N);
+        this.unionFind = new WeightedQuickUnionUF(numSites + 2);
+        this.posVirtualTop = numSites;
+        this.posVirtualBtm = numSites + 1;
         this.numOpened = 0;
+
+        for (int col = 0; col < sideLength; col++) {
+            unionFind.union(posVirtualTop, flattenLocation(0, col));
+            unionFind.union(posVirtualBtm, flattenLocation(sideLength - 1, col));
+        }
     }
 
     public void open(int row, int col) {
@@ -41,16 +51,7 @@ public class Percolation {
 
     public boolean isFull(int row, int col) {
         validateLocation(row, col);
-
-        int flatLoc = flattenLocation(row, col);
-        boolean full = false;
-        for (int i = 0; i < sideLength; i++) {
-            if (opened[0][i] && unionFind.connected(flatLoc, flattenLocation(0, i))) {
-                full = true;
-                break;
-            }
-        }
-        return full;
+        return unionFind.connected(flattenLocation(row, col), posVirtualTop);
     }
 
     public int numberOfOpenSites() {
@@ -58,27 +59,17 @@ public class Percolation {
     }
 
     public boolean percolates() {
-        boolean doesPercolate = false;
-        outer:
-        for (int btmCol = 0; btmCol < sideLength; btmCol++) {
-            for (int topCol = 0; topCol < sideLength; topCol++) {
-                if (opened[0][topCol] && opened[sideLength - 1][btmCol] && unionFind.connected(flattenLocation(0, topCol), flattenLocation(sideLength - 1, btmCol))) {
-                    doesPercolate = true;
-                    break outer;
-                }
-            }
-        }
-        return doesPercolate;
+        return unionFind.connected(posVirtualBtm, posVirtualTop);
     }
 
     private void validateLocation(int row, int col) {
-        if (row < 0 || row >= sideLength - 1 || col < 0 || col >= sideLength - 1) {
+        if (row < 0 || row > sideLength - 1 || col < 0 || col > sideLength - 1) {
             throw new IndexOutOfBoundsException();
         }
     }
 
     private boolean isValidLocation(int row, int col) {
-        return row < 0 || row > sideLength - 1 || col < 0 || col >= sideLength - 1;
+        return row >= 0 && row < sideLength && col >= 0 && col < sideLength;
     }
 
     private int flattenLocation(int row, int col) {
