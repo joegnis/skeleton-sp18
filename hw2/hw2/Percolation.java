@@ -51,7 +51,7 @@ public class Percolation {
 
     public boolean isFull(int row, int col) {
         validateLocation(row, col);
-        return unionFind.connected(flattenLocation(row, col), posVirtualTop);
+        return isOpen(row, col) && unionFind.connected(flattenLocation(row, col), posVirtualTop);
     }
 
     public int numberOfOpenSites() {

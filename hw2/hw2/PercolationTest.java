@@ -58,6 +58,19 @@ public class PercolationTest {
     }
 
     @Test
+    public void testFull() {
+        Percolation p = new Percolation(3);
+        assertFalse(p.isFull(0, 0));
+        assertFalse(p.isFull(0, 1));
+        assertFalse(p.isFull(0, 2));
+
+        p.open(0, 1);
+        assertFalse(p.isFull(0, 0));
+        assertTrue(p.isFull(0, 1));
+        assertFalse(p.isFull(0, 2));
+    }
+
+    @Test
     public void testOutOfBound() {
         Percolation p = new Percolation(3);
 
