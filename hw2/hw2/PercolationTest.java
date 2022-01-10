@@ -82,6 +82,15 @@ public class PercolationTest {
     }
 
     @Test
+    public void testRepeatedlyOpen() {
+        Percolation p = new Percolation(3);
+        p.open(0, 1);
+        p.open(0, 1);
+        p.open(0, 1);
+        assertEquals(1, p.numberOfOpenSites());
+    }
+
+    @Test
     public void testOutOfBound() {
         Percolation p = new Percolation(3);
 

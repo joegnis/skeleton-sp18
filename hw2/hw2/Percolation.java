@@ -32,6 +32,9 @@ public class Percolation {
 
     public void open(int row, int col) {
         validateLocation(row, col);
+        if (opened[row][col]) {
+            return;
+        }
 
         int flatLoc = flattenLocation(row, col);
         int[] neighborRows = new int[]{row, row, row + 1, row - 1};
