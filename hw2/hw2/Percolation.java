@@ -13,6 +13,9 @@ public class Percolation {
 
     public Percolation(int N) {
         // create N-by-N grid, with all sites initially blocked
+        if (N < 0) {
+            throw new IllegalArgumentException("Negative N");
+        }
         this.opened = new boolean[N][N];
         this.sideLength = N;
         int numSites = flattenLocation(N, N);

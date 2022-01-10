@@ -113,4 +113,8 @@ public class PercolationTest {
         assertThrows(IndexOutOfBoundsException.class, () -> p.isFull(3, 1));
     }
 
+    @Test
+    public void testConstructor() {
+        assertThrows(IllegalArgumentException.class, () -> new Percolation(-10));
+    }
 }
