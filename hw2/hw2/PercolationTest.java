@@ -91,6 +91,20 @@ public class PercolationTest {
     }
 
     @Test
+    public void testSmallN() {
+        Percolation p = new Percolation(1);
+        assertFalse(p.percolates());
+        p.open(0, 0);
+        assertTrue(p.percolates());
+
+        Percolation p2 = new Percolation(2);
+        assertFalse(p2.percolates());
+        p2.open(0, 0);
+        p2.open(1, 0);
+        assertTrue(p2.percolates());
+    }
+
+    @Test
     public void testOutOfBound() {
         Percolation p = new Percolation(3);
 

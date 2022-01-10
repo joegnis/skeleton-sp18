@@ -21,13 +21,6 @@ public class Percolation {
         this.posVirtualTop = numSites;
         this.posVirtualBtm = numSites + 1;
         this.numOpened = 0;
-
-        for (int col = 0; col < sideLength; col++) {
-            int siteFirstRow = flattenLocation(0, col);
-            unionFind.union(posVirtualTop, siteFirstRow);
-            unionFindFull.union(posVirtualTop, siteFirstRow);
-            unionFind.union(posVirtualBtm, flattenLocation(sideLength - 1, col));
-        }
     }
 
     public void open(int row, int col) {
@@ -48,6 +41,16 @@ public class Percolation {
                 unionFind.union(flatLoc, locNeighbor);
                 unionFindFull.union(flatLoc, locNeighbor);
             }
+        }
+        // Connect sites if they are in the first or last row
+        // Connecting here instead of pre-connecting in constructor is because when N=1, pre-connection leads the sites
+        // to be percolated during creation.
+        if (row == 0) {
+            unionFind.union(flatLoc, posVirtualTop);
+            unionFindFull.union(flatLoc, posVirtualTop);
+        }
+        if (row == sideLength - 1) {
+            unionFind.union(flatLoc, posVirtualBtm);
         }
         opened[row][col] = true;
         numOpened += 1;
