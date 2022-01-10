@@ -8,6 +8,9 @@ public class PercolationStats {
     private final int numExperiments;
 
     public PercolationStats(int N, int T, PercolationFactory pf) {
+        if (N < 0 || T < 0) {
+            throw new IllegalArgumentException("N or T is negative");
+        }
         this.ratioOpenSites = new double[T];
         this.numExperiments = T;
 
