@@ -116,5 +116,6 @@ public class PercolationTest {
     @Test
     public void testConstructor() {
         assertThrows(IllegalArgumentException.class, () -> new Percolation(-10));
+        assertThrows(IllegalArgumentException.class, () -> new Percolation(0));
     }
 }
