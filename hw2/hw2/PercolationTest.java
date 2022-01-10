@@ -58,7 +58,7 @@ public class PercolationTest {
     }
 
     @Test
-    public void testFull() {
+    public void testFirstRowNotFullInitially() {
         Percolation p = new Percolation(3);
         assertFalse(p.isFull(0, 0));
         assertFalse(p.isFull(0, 1));
@@ -68,6 +68,17 @@ public class PercolationTest {
         assertFalse(p.isFull(0, 0));
         assertTrue(p.isFull(0, 1));
         assertFalse(p.isFull(0, 2));
+    }
+
+    @Test
+    public void testOtherBottomSitesNotFullAfterPercolates() {
+        Percolation p = new Percolation(3);
+        p.open(0, 0);
+        p.open(1, 0);
+        p.open(2, 0);
+        p.open(2, 2);
+        assertTrue(p.isFull(2, 0));
+        assertFalse(p.isFull(2, 2));
     }
 
     @Test

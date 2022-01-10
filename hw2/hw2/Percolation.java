@@ -6,6 +6,7 @@ public class Percolation {
     private final boolean[][] opened;
     private final int sideLength;
     private final WeightedQuickUnionUF unionFind;
+    private final WeightedQuickUnionUF unionFindFull;  // for testing fullness
     private final int posVirtualTop;
     private final int posVirtualBtm;
     private int numOpened;
@@ -16,12 +17,15 @@ public class Percolation {
         this.sideLength = N;
         int numSites = flattenLocation(N, N);
         this.unionFind = new WeightedQuickUnionUF(numSites + 2);
+        this.unionFindFull = new WeightedQuickUnionUF(numSites + 1);
         this.posVirtualTop = numSites;
         this.posVirtualBtm = numSites + 1;
         this.numOpened = 0;
 
         for (int col = 0; col < sideLength; col++) {
-            unionFind.union(posVirtualTop, flattenLocation(0, col));
+            int siteFirstRow = flattenLocation(0, col);
+            unionFind.union(posVirtualTop, siteFirstRow);
+            unionFindFull.union(posVirtualTop, siteFirstRow);
             unionFind.union(posVirtualBtm, flattenLocation(sideLength - 1, col));
         }
     }
@@ -37,7 +41,9 @@ public class Percolation {
             int neighborCol = neighborCols[i];
 
             if (isValidLocation(neighborRow, neighborCol) && opened[neighborRow][neighborCol]) {
-                unionFind.union(flatLoc, flattenLocation(neighborRow, neighborCol));
+                int locNeighbor = flattenLocation(neighborRow, neighborCol);
+                unionFind.union(flatLoc, locNeighbor);
+                unionFindFull.union(flatLoc, locNeighbor);
             }
         }
         opened[row][col] = true;
@@ -51,7 +57,7 @@ public class Percolation {
 
     public boolean isFull(int row, int col) {
         validateLocation(row, col);
-        return isOpen(row, col) && unionFind.connected(flattenLocation(row, col), posVirtualTop);
+        return isOpen(row, col) && unionFindFull.connected(flattenLocation(row, col), posVirtualTop);
     }
 
     public int numberOfOpenSites() {
