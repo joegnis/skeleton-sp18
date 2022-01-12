@@ -1,29 +1,39 @@
 package hw2;
 
-import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+import java.lang.reflect.InvocationTargetException;
 
 public class Percolation {
     private final boolean[][] opened;
     private final int sideLength;
-    private final WeightedQuickUnionUF unionFind;
-    private final WeightedQuickUnionUF unionFindFull;  // for testing fullness
+    private final IUnionFind unionFind;
+    private final IUnionFind unionFindFull;  // for testing fullness
     private final int posVirtualTop;
     private final int posVirtualBtm;
     private int numOpened;
 
-    public Percolation(int N) {
+    public <U extends IUnionFind> Percolation(int N, Class<U> unionFindClass) {
         // create N-by-N grid, with all sites initially blocked
         if (N <= 0) {
-            throw new IllegalArgumentException("Non-positive N");
+            throw new IllegalArgumentException("Non-positive N: " + N);
         }
         this.opened = new boolean[N][N];
         this.sideLength = N;
         int numSites = flattenLocation(N, N);
-        this.unionFind = new WeightedQuickUnionUF(numSites + 2);
-        this.unionFindFull = new WeightedQuickUnionUF(numSites + 1);
         this.posVirtualTop = numSites;
         this.posVirtualBtm = numSites + 1;
         this.numOpened = 0;
+
+        try {
+            this.unionFind = unionFindClass.getDeclaredConstructor(int.class).newInstance(numSites + 2);
+            this.unionFindFull = unionFindClass.getDeclaredConstructor(int.class).newInstance(numSites + 1);
+        } catch (NoSuchMethodException|IllegalAccessException|IllegalArgumentException|InstantiationException|InvocationTargetException ex) {
+            ex.printStackTrace();
+            throw new IllegalArgumentException("Failed to initialize union find objects.");
+        }
+    }
+
+    public Percolation(int N) {
+        this(N, QuickUnion.class);
     }
 
     public void open(int row, int col) {

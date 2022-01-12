@@ -1,5 +1,6 @@
 package hw2;
 
+import edu.princeton.cs.algs4.QuickFindUF;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
@@ -7,7 +8,7 @@ public class PercolationStats {
     private final double[] ratioOpenSites;
     private final int numExperiments;
 
-    public PercolationStats(int N, int T, PercolationFactory pf) {
+    public <U extends IUnionFind> PercolationStats(int N, int T, PercolationFactory pf, Class<U> unionFindClass) {
         if (N <= 0 || T <= 0) {
             throw new IllegalArgumentException("N or T is not a positive integer");
         }
@@ -15,7 +16,7 @@ public class PercolationStats {
         this.numExperiments = T;
 
         for (int exp = 0; exp < T; exp++) {
-            Percolation percolation = pf.make(N);
+            Percolation percolation = pf.make(N, unionFindClass);
 
             while (!percolation.percolates()) {
                 while (true) {
@@ -32,6 +33,10 @@ public class PercolationStats {
 
             ratioOpenSites[exp] = percolation.numberOfOpenSites() / (double) (N * N);
         }
+    }
+
+    public PercolationStats(int N, int T, PercolationFactory pf) {
+        this(N, T, pf, QuickUnion.class);
     }
 
     public double mean() {
