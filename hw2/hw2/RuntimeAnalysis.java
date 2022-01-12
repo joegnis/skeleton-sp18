@@ -27,23 +27,23 @@ public class RuntimeAnalysis {
     }
 
     public static void main(String[] args) {
-        // Fixed T
-        int N = 100;
-        int T = 50;
-        int initN = 50;
+        // Fixed number of experiments, and varied number of items
+        int numItems = 200;
+        int numExperiments = 50;
+        int initNumItems = 50;
         XYChart chart = new XYChartBuilder()
                 .title("Union find in Percolation")
                 .width(800).height(600)
-                .xAxisTitle(String.format("Grid size (Number of experiments=%d)", N))
+                .xAxisTitle(String.format("Grid size (Number of experiments=%d)", numItems))
                 .yAxisTitle("Runtime (seconds)")
                 .build();
 
-        List<Integer> tList = IntStream.iterate(T, v -> v).limit(N).boxed().collect(Collectors.toList());
+        List<Integer> tList = IntStream.iterate(numExperiments, v -> v).limit(numItems).boxed().collect(Collectors.toList());
 
-        // QuickUnion with a fixed T
-        List<Integer> nList = IntStream.range(initN, initN + N).boxed().collect(Collectors.toList());
-        List<Double> runtimes = recordTimes(nList, tList, QuickUnion.class);
-        chart.addSeries("QuickFind", nList, runtimes);
+        // QuickUnion with a fixed number of experiments
+        List<Integer> nList = IntStream.range(initNumItems, initNumItems + numItems).boxed().collect(Collectors.toList());
+        chart.addSeries("QuickUnion", nList, recordTimes(nList, tList, QuickUnion.class));
+        chart.addSeries("WeightedQuickUnion", nList, recordTimes(nList, tList, WeightedQuickUnion.class));
 
         new SwingWrapper<>(chart).displayChart();
     }
