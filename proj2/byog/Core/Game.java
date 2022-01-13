@@ -50,12 +50,14 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
-        // TODO: Fill out this method to run the game using the input passed in,
-        // and return a 2D tile representation of the world that would have been
-        // drawn if the same inputs had been given to playWithKeyboard().
+        for (char in : input.toCharArray()) {
+            state = state.handleInput(in);
+            if (state instanceof ExitState) {
+                break;
+            }
+        }
 
-        TETile[][] finalWorldFrame = null;
-        return finalWorldFrame;
+        return curWorld;
     }
 
     private static final int WIDTH = 80;  // unit: tile size
@@ -64,6 +66,7 @@ public class Game {
 
     private final TERenderer renderer;
     private final WorldGenerator worldGenerator;
+    private TETile[][] curWorld;
 
     private IGameState state;
 
@@ -112,7 +115,8 @@ public class Game {
     private class PlayState extends BaseState {
         @Override
         public void enter() {
-            renderer.renderFrame(worldGenerator.make());
+            curWorld = worldGenerator.make();
+            renderer.renderFrame(curWorld);
         }
     }
 
