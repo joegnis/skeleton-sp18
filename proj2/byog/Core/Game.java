@@ -115,7 +115,7 @@ public class Game {
     private class PlayState extends BaseState {
         @Override
         public void enter() {
-            curWorld = worldGenerator.make();
+            curWorld = worldGenerator.makeRandom();
             renderer.renderFrame(curWorld);
         }
     }

@@ -4,17 +4,10 @@ import byog.Core.RandomUtils;
 
 import java.util.Random;
 
-class RoomGenerator {
-    public RoomGenerator(Random random) {
-        this.random = random;
-    }
+class RoomFactory {
+    private static final RoomFactory instance = new RoomFactory();
 
-    public WalledRect make(int startX, int startY) {
-        return new WalledRect(
-                startX, startY,
-                RandomUtils.uniform(this.random, DEFAULT_WIDTH_MIN, DEFAULT_WIDTH_MAX),
-                RandomUtils.uniform(this.random, DEFAULT_HEIGHT_MIN, DEFAULT_HEIGHT_MAX)
-        );
+    private RoomFactory() {
     }
 
     public int getMinWidth() {
@@ -37,5 +30,16 @@ class RoomGenerator {
     private static final int DEFAULT_WIDTH_MAX = 12;
     private static final int DEFAULT_HEIGHT_MIN = 3;
     private static final int DEFAULT_HEIGHT_MAX = 12;
-    private final Random random;
+
+    public static RoomFactory instance() {
+        return instance;
+    }
+
+    public RoomRect makeRandom(Random random, int startX, int startY) {
+        return new RoomRect(
+                startX, startY,
+                RandomUtils.uniform(random, DEFAULT_WIDTH_MIN, DEFAULT_WIDTH_MAX),
+                RandomUtils.uniform(random, DEFAULT_HEIGHT_MIN, DEFAULT_HEIGHT_MAX)
+        );
+    }
 }
