@@ -18,12 +18,32 @@ class HallwayFactory {
         return instance;
     }
 
-    public RoomRect makeRandom(Random random, int startX, int startY) {
-        return new RoomRect(
-                startX, startY,
-                RandomUtils.uniform(random, DEFAULT_WIDTH_MIN, DEFAULT_WIDTH_MAX),
-                RandomUtils.uniform(random, DEFAULT_LENGTH_MIN, DEFAULT_LENGTH_MAX)
-        );
+    public RoomRect makeRandom(Random random, int startX, int startY, Direction direction) {
+        int width = RandomUtils.uniform(random, DEFAULT_WIDTH_MIN, DEFAULT_WIDTH_MAX);
+        int length = RandomUtils.uniform(random, DEFAULT_LENGTH_MIN, DEFAULT_LENGTH_MAX);
+        int realWidth = width;
+        int realHeight = length;
+        int realX = startX;
+        int realY = startY;
+        switch (direction) {
+            case PLUS_X:
+                realWidth = length;
+                realHeight = width;
+                break;
+            case MINUS_X:
+                realX -= length;
+                realWidth = length;
+                realHeight = width;
+                break;
+            case PLUS_Y:
+                break;
+            case MINUS_Y:
+                realY -= length;
+                break;
+            case NONE:
+                throw new IllegalArgumentException("Direction is None.");
+        }
+        return new RoomRect(realX, realY, realWidth, realHeight);
     }
 
     public int getMinWidth() {

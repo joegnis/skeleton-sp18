@@ -1,5 +1,6 @@
 package byog.Core;
 
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -327,6 +328,36 @@ public class RandomUtils {
         // can't reach here
         assert false;
         return -1;
+    }
+
+    public static <T> T discrete(Random random, Map<T, Double> probabilities) {
+        if (probabilities == null) {
+            throw new IllegalArgumentException("argument array is null");
+        }
+        double sum = 0.0;
+        for (double p : probabilities.values()) {
+            if (!(p >= 0.0)) {
+                throw new IllegalArgumentException("probability " + p + " must be non-negative");
+            }
+            sum += p;
+        }
+        if (Utils.compareToDouble(sum, 1.0) == 0) {
+            throw new IllegalArgumentException("sum of probabilities does not approximately "
+                    + "equal 1.0: " + sum);
+        }
+
+        // the for loop may not return a value when both r is (nearly) 1.0 and when the
+        // cumulative sum is less than 1.0 (as a result of floating-point roundoff error)
+        while (true) {
+            double r = uniform(random);
+            sum = 0.0;
+            for (Map.Entry<T, Double> entry : probabilities.entrySet()) {
+                sum = sum + entry.getValue();
+                if (sum > r) {
+                    return entry.getKey();
+                }
+            }
+        }
     }
 
     /**

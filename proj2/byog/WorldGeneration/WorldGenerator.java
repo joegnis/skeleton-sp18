@@ -1,5 +1,7 @@
 package byog.WorldGeneration;
 
+import byog.Core.Utils;
+import byog.Core.WeightedQuickUnionPC;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
@@ -12,6 +14,7 @@ public class WorldGenerator {
     private final int worldWidth;
     private final int worldHeight;
     private final GrowingRectManager rectManager;
+    private final WeightedQuickUnionPC occupiedTiles;
 
     public WorldGenerator(int worldWidth, int worldHeight, int randomSeed) {
         this.random = new Random(randomSeed);
@@ -23,6 +26,7 @@ public class WorldGenerator {
                 tiles[i][j] = Tileset.NOTHING;
 
         this.rectManager = new GrowingRectManager();
+        this.occupiedTiles = new WeightedQuickUnionPC(worldWidth * worldHeight);
     }
 
     public WorldGenerator(int worldWidth, int worldHeight) {
@@ -30,13 +34,8 @@ public class WorldGenerator {
     }
 
     public TETile[][] makeRandom() {
-        // Adds the first room
         rectManager.grow(this);
         return this.tiles;
-    }
-
-    public TETile[][] getTiles() {
-        return tiles;
     }
 
     public int getWorldWidth() {
@@ -51,7 +50,11 @@ public class WorldGenerator {
         return random;
     }
 
-    void addRoomRect(RoomRect rect) {
+    TETile[][] getTiles() {
+        return tiles;
+    }
+
+    void addRoomRect(RoomRect rect, int occupiedX, int occupiedY) {
         if (rect.getX() + rect.getWidth() > this.worldWidth) {
             throw new IllegalArgumentException(String.format("Not enough space to add this rect: x + width = %d + %d > tiles' width = %d", rect.getX(), rect.getWidth(), this.worldWidth));
         }
@@ -63,21 +66,36 @@ public class WorldGenerator {
         int startY = rect.getY();
         int width = rect.getWidth();
         int height = rect.getHeight();
+        int occupiedParentTile = Utils.rowColTo1D(occupiedX, occupiedY, worldWidth);
         // Walls
         for (int x = startX; x < startX + width; x++) {
-            this.tiles[x][startY] = rect.getTileWall();
-            this.tiles[x][startY + height - 1] = rect.getTileWall();
+            int rightWallY = startY + height - 1;
+            tiles[x][startY] = rect.getTileWall();
+            tiles[x][rightWallY] = rect.getTileWall();
+            occupiedTiles.union(occupiedParentTile, Utils.rowColTo1D(x, startY, worldWidth));
+            occupiedTiles.union(occupiedParentTile, Utils.rowColTo1D(x, rightWallY, worldWidth));
         }
         for (int y = startY + 1; y < startY + height - 1; y++) {
-            this.tiles[startX][y] = rect.getTileWall();
-            this.tiles[startX + width - 1][y] = rect.getTileWall();
+            int topWallX = startX + width - 1;
+            tiles[startX][y] = rect.getTileWall();
+            tiles[topWallX][y] = rect.getTileWall();
+            occupiedTiles.union(occupiedParentTile, Utils.rowColTo1D(startX, y, worldWidth));
+            occupiedTiles.union(occupiedParentTile, Utils.rowColTo1D(topWallX, y, worldWidth));
         }
 
         // Floors
         for (int x = startX + 1; x < startX + width - 1; x++) {
             for (int y = startY + 1; y < startY + height - 1; y++) {
-                this.tiles[x][y] = rect.getTileFloor();
+                tiles[x][y] = rect.getTileFloor();
+                occupiedTiles.union(occupiedParentTile, Utils.rowColTo1D(x, y, worldWidth));
             }
         }
+    }
+
+    boolean areTilesConnected(int tile1X, int tile1Y, int tile2X, int tile2Y) {
+        return occupiedTiles.connected(
+                Utils.rowColTo1D(tile1X, tile1Y, worldWidth),
+                Utils.rowColTo1D(tile2X, tile2Y, worldWidth)
+        );
     }
 }
