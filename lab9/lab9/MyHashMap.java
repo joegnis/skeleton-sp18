@@ -14,7 +14,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     private static final int DEFAULT_SIZE = 16;
     private static final double MAX_LF = 0.75;
 
-    private final ArrayMap<K, V>[] buckets;
+    private ArrayMap<K, V>[] buckets;
     private int size;
 
     private int loadFactor() {
@@ -62,6 +62,21 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         ArrayMap<K, V> bucket = buckets[hash(key)];
         if (!bucket.containsKey(key)) size++;
         bucket.put(key, value);
+
+        if (loadFactor() > MAX_LF) {
+            int newSize = buckets.length * 2;
+            ArrayMap<K, V>[] newBuckets = new ArrayMap[newSize];
+            for (int i = 0; i < newSize; i++) {
+                newBuckets[i] = new ArrayMap<>();
+            }
+            for (ArrayMap<K, V> oldBucket : buckets) {
+                for (K k : oldBucket) {
+                    int newCode = Math.floorMod(k.hashCode(), newSize);
+                    newBuckets[newCode].put(k, oldBucket.get(k));
+                }
+            }
+            buckets = newBuckets;
+        }
     }
 
     /* Returns the number of key-value mappings in this map. */
