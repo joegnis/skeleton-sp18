@@ -3,6 +3,8 @@ package lab9tester;
 import lab9.MyHashMap;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -79,6 +81,58 @@ public class TestMyHashMap {
         MyHashMap<String, Integer> b = new MyHashMap<String, Integer>();
         b.put("hi", 1);
         assertTrue(b.containsKey("hi") && b.get("hi") != null);
+    }
+
+    @Test
+    public void sanityRemoveByKeyTest() {
+        MyHashMap<String, Integer> b = new MyHashMap<>();
+        for (int i = 0; i < 455; i++) {
+            b.put("hi" + i, 1);
+        }
+        assertNull(b.remove("hi" + 455));
+        for (int i = 0; i < 455; i++) {
+            assertEquals(1, b.remove("hi" + i));
+            assertEquals(455 - 1 - i, b.size());
+        }
+        assertNull(b.remove("hi" + 455));
+    }
+
+    @Test
+    public void sanityRemoveByKeyValueTest() {
+        MyHashMap<String, Integer> b = new MyHashMap<>();
+        for (int i = 0; i < 455; i++) {
+            b.put("hi" + i, 1);
+        }
+        assertNull(b.remove("hi" + 0, 2));
+        for (int i = 0; i < 455; i++) {
+            assertEquals(1, b.remove("hi" + i, 1));
+            assertEquals(455 - 1 - i, b.size());
+        }
+        assertNull(b.remove("hi" + 10, -1));
+    }
+
+    @Test
+    public void sanityKeySetTest() {
+        MyHashMap<String, Integer> b = new MyHashMap<>();
+        b.put("foo", 1);
+        b.put("bar", 2);
+        b.put("hi", 3);
+        assertEquals(Set.of("foo", "bar", "hi"), b.keySet());
+    }
+
+    @Test
+    public void sanityIteratorTest() {
+        MyHashMap<String, Integer> b = new MyHashMap<>();
+        b.put("foo", 1);
+        b.put("bar", 2);
+        b.put("hi", 3);
+        int count = 0;
+        Set<String> expectKeys = Set.of("foo", "bar", "hi");
+        for (String key : b) {
+            assertTrue(expectKeys.contains(key));
+            count++;
+        }
+        assertEquals(3, count);
     }
 
     /*
