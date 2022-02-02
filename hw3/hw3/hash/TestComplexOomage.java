@@ -1,13 +1,13 @@
 package hw3.hash;
 
 import edu.princeton.cs.algs4.StdRandom;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestComplexOomage {
 
@@ -56,4 +56,7 @@ public class TestComplexOomage {
         assertTrue(OomageTestUtility.haveNiceHashCodeSpread(deadlyList, 10));
     }
 
+    public static void main(String[] args) {
+        jh61b.junit.textui.runClasses(TestComplexOomage.class);
+    }
 }
