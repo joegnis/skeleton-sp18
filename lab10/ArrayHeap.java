@@ -1,5 +1,6 @@
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * A Generic heap class. Unlike Java's priority queue, this heap doesn't just
@@ -64,10 +65,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      * invalid because we leave the 0th entry blank.
      */
     private boolean inBounds(int index) {
-        if ((index > size) || (index < 1)) {
-            return false;
-        }
-        return true;
+        return (index <= size) && (index >= 1);
     }
 
     /**
@@ -229,31 +227,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         }
     }
 
-    private class Node {
-        private T myItem;
-        private double myPriority;
-
-        private Node(T item, double priority) {
-            myItem = item;
-            myPriority = priority;
-        }
-
-        public T item(){
-            return myItem;
-        }
-
-        public double priority() {
-            return myPriority;
-        }
-
-        @Override
-        public String toString() {
-            return myItem.toString() + ", " + myPriority;
-        }
-    }
-
-
-    /** Helper function to resize the backing array when necessary. */
+    /**
+     * Helper function to resize the backing array when necessary.
+     */
     private void resize(int capacity) {
         Node[] temp = new ArrayHeap.Node[capacity];
         for (int i = 1; i < this.contents.length; i++) {
@@ -327,7 +303,6 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         assertEquals("x7", pq.contents[7].myItem);
     }
 
-
     @Test
     public void testInsert() {
         ArrayHeap<String> pq = new ArrayHeap<>();
@@ -363,7 +338,6 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         assertEquals("c", pq.contents[9].myItem);
         assertEquals("d", pq.contents[10].myItem);
     }
-
 
     @Test
     public void testInsertAndRemoveOnce() {
@@ -411,6 +385,29 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         while (pq.size() > 1) {
             assertEquals(expected[i], pq.removeMin());
             i += 1;
+        }
+    }
+
+    private class Node {
+        private final T myItem;
+        private double myPriority;
+
+        private Node(T item, double priority) {
+            myItem = item;
+            myPriority = priority;
+        }
+
+        public T item() {
+            return myItem;
+        }
+
+        public double priority() {
+            return myPriority;
+        }
+
+        @Override
+        public String toString() {
+            return myItem.toString() + ", " + myPriority;
         }
     }
 
