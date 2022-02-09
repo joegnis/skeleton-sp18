@@ -181,8 +181,10 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         T minItem = contents[1].item();
         swap(1, size);
         size--;
-        // sink will check bounds, so we need to change size first
-        sink(1);
+        if (size > 0) {
+            // sink will check bounds, so we need to change size first
+            sink(1);
+        }
         return minItem;
     }
 
@@ -428,6 +430,13 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     }
 
     @Test
+    public void testInsertAndRemoveEdgeCase() {
+        ExtrinsicPQ<String> pq = new ArrayHeap<>();
+        pq.insert("c", 3);
+        assertEquals("c", pq.removeMin());
+    }
+
+    @Test
     public void testChangePriority() {
         ArrayHeap<String> pq = new ArrayHeap<>();
         pq.insert("c", 3);
@@ -440,13 +449,58 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         pq.insert("b", 2);
         pq.insert("c", 3);
         pq.insert("d2", 4);
-
         pq.changePriority("d1", 1);
         assertEquals("d1", pq.contents[1].myItem);
         assertEquals("a", pq.contents[2].myItem);
         assertEquals("e", pq.contents[3].myItem);
         assertEquals("c", pq.contents[4].myItem);
         assertEquals("b", pq.contents[5].myItem);
+        assertEquals("h", pq.contents[6].myItem);
+        assertEquals("g", pq.contents[7].myItem);
+        assertEquals("i", pq.contents[8].myItem);
+        assertEquals("c", pq.contents[9].myItem);
+        assertEquals("d2", pq.contents[10].myItem);
+
+        pq = new ArrayHeap<>();
+        pq.insert("c", 3);
+        pq.insert("i", 9);
+        pq.insert("g", 7);
+        pq.insert("d1", 4);
+        pq.insert("a", 1);
+        pq.insert("h", 8);
+        pq.insert("e", 5);
+        pq.insert("b", 2);
+        pq.insert("c", 3);
+        pq.insert("d2", 4);
+        pq.changePriority("d1", 5);
+        assertEquals("a", pq.contents[1].myItem);
+        assertEquals("b", pq.contents[2].myItem);
+        assertEquals("e", pq.contents[3].myItem);
+        assertEquals("c", pq.contents[4].myItem);
+        assertEquals("d2", pq.contents[5].myItem);
+        assertEquals("h", pq.contents[6].myItem);
+        assertEquals("g", pq.contents[7].myItem);
+        assertEquals("i", pq.contents[8].myItem);
+        assertEquals("c", pq.contents[9].myItem);
+        assertEquals("d1", pq.contents[10].myItem);
+
+        pq = new ArrayHeap<>();
+        pq.insert("c", 3);
+        pq.insert("i", 9);
+        pq.insert("g", 7);
+        pq.insert("d1", 4);
+        pq.insert("a", 1);
+        pq.insert("h", 8);
+        pq.insert("e", 5);
+        pq.insert("b", 2);
+        pq.insert("c", 3);
+        pq.insert("d2", 4);
+        pq.changePriority("d1", 3);
+        assertEquals("a", pq.contents[1].myItem);
+        assertEquals("b", pq.contents[2].myItem);
+        assertEquals("e", pq.contents[3].myItem);
+        assertEquals("c", pq.contents[4].myItem);
+        assertEquals("d1", pq.contents[5].myItem);
         assertEquals("h", pq.contents[6].myItem);
         assertEquals("g", pq.contents[7].myItem);
         assertEquals("i", pq.contents[8].myItem);
