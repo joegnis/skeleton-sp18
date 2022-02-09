@@ -205,8 +205,20 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public void changePriority(T item, double priority) {
-        /* TODO: Your code here! */
-        return;
+        int indexItem = 1;
+        while (indexItem <= size && !contents[indexItem].item().equals(item)) {
+            indexItem++;
+        }
+        if (indexItem <= size) {
+            Node node = contents[indexItem];
+            double oldPriority = node.priority();
+            node.myPriority = priority;
+            if (priority > oldPriority) {
+                sink(indexItem);
+            } else {
+                swim(indexItem);
+            }
+        }
     }
 
     /**
@@ -413,6 +425,33 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
             assertEquals(expected[i], pq.removeMin());
             i += 1;
         }
+    }
+
+    @Test
+    public void testChangePriority() {
+        ArrayHeap<String> pq = new ArrayHeap<>();
+        pq.insert("c", 3);
+        pq.insert("i", 9);
+        pq.insert("g", 7);
+        pq.insert("d1", 4);
+        pq.insert("a", 1);
+        pq.insert("h", 8);
+        pq.insert("e", 5);
+        pq.insert("b", 2);
+        pq.insert("c", 3);
+        pq.insert("d2", 4);
+
+        pq.changePriority("d1", 1);
+        assertEquals("d1", pq.contents[1].myItem);
+        assertEquals("a", pq.contents[2].myItem);
+        assertEquals("e", pq.contents[3].myItem);
+        assertEquals("c", pq.contents[4].myItem);
+        assertEquals("b", pq.contents[5].myItem);
+        assertEquals("h", pq.contents[6].myItem);
+        assertEquals("g", pq.contents[7].myItem);
+        assertEquals("i", pq.contents[8].myItem);
+        assertEquals("c", pq.contents[9].myItem);
+        assertEquals("d2", pq.contents[10].myItem);
     }
 
     private class Node {
