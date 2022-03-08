@@ -25,6 +25,11 @@ public class MazeBreadthFirstPaths extends MazeExplorer {
 
     /** Conducts a breadth first search of the maze starting at the source. */
     private void bfs() {
+        for (int v = 0; v < maze.V(); v++) {
+            edgeTo[v] = Integer.MAX_VALUE;
+            distTo[v] = Integer.MAX_VALUE;
+            marked[v] = false;
+        }
         Queue<Integer> fringe = new ArrayDeque<>();
         fringe.offer(source);
         distTo[source] = 0;

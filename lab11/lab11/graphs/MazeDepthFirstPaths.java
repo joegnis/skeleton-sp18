@@ -52,6 +52,11 @@ public class MazeDepthFirstPaths extends MazeExplorer {
     }
 
     private void dfsIterative(int startVertex) {
+        for (int v = 0; v < maze.V(); v++) {
+            distTo[v] = Integer.MAX_VALUE;
+            edgeTo[v] = Integer.MAX_VALUE;
+            marked[v] = false;
+        }
         final Stack<Integer> fringe = new Stack<>();
         fringe.push(startVertex);
         distTo[startVertex] = 0;
