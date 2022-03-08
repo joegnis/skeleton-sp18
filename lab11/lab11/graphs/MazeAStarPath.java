@@ -41,8 +41,6 @@ public class MazeAStarPath extends MazeExplorer {
         }
         distTo[sourceVertex] = 0;
         edgeTo[sourceVertex] = sourceVertex;
-        // We mark each vertex once they are in the queue
-        // This is different from DFS iterative
         marked[sourceVertex] = true;
         fringe.decreaseKey(sourceVertex, heuristic(sourceVertex));
         announce();
@@ -50,8 +48,13 @@ public class MazeAStarPath extends MazeExplorer {
         while (!fringe.isEmpty()) {
             int v = fringe.delMin();
             for (int neighbor : maze.adj(v)) {
-                if (marked[neighbor]) {
-                    // don't have to check but improves runtime
+                // Don't have to check but improves runtime
+                // We do not use marked array to mark as visited
+                // Using the fringe PQ to check is as effective
+                // Here marked array is only for drawing purpose
+                // This is different from BFS where vertices are enqueued group by group
+                // Here all vertices are inserted into the priority queue beforehand
+                if (!fringe.contains(neighbor)) {
                     continue;
                 }
                 relax(v, neighbor);
