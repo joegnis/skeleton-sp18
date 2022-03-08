@@ -41,6 +41,8 @@ public class MazeAStarPath extends MazeExplorer {
         }
         distTo[sourceVertex] = 0;
         edgeTo[sourceVertex] = sourceVertex;
+        // We mark each vertex once they are in the queue
+        // This is different from DFS iterative
         marked[sourceVertex] = true;
         fringe.decreaseKey(sourceVertex, heuristic(sourceVertex));
         announce();

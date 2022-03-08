@@ -34,6 +34,8 @@ public class MazeBreadthFirstPaths extends MazeExplorer {
         fringe.offer(source);
         distTo[source] = 0;
         edgeTo[source] = source;
+        // We mark each vertex once they are in the queue
+        // This is different from DFS iterative
         marked[source] = true;
         announce();
 
