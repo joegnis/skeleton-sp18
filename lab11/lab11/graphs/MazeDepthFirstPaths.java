@@ -51,7 +51,7 @@ public class MazeDepthFirstPaths extends MazeExplorer {
         }
     }
 
-    private void dfsIterative(int startVertex) {
+    private void dfsIterative(int startVertex, int targetVertex) {
         for (int v = 0; v < maze.V(); v++) {
             distTo[v] = Integer.MAX_VALUE;
             edgeTo[v] = Integer.MAX_VALUE;
@@ -82,6 +82,11 @@ public class MazeDepthFirstPaths extends MazeExplorer {
                     fringe.push(neighbor);
                     distTo[neighbor] = distTo[vertex] + 1;
                     edgeTo[neighbor] = vertex;
+                    // Note that we compare vertex instead of neighbor
+                    // Needs to put here for the last vertex to be drawn
+                    if (vertex == targetVertex) {
+                        return;
+                    }
                 }
             }
         }
@@ -89,7 +94,7 @@ public class MazeDepthFirstPaths extends MazeExplorer {
 
     @Override
     public void solve() {
-        dfsIterative(s);
+        dfsIterative(s, t);
         System.out.println("DFS finished.");
     }
 }
