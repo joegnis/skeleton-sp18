@@ -1,7 +1,9 @@
 package lab11.graphs;
 
+import edu.princeton.cs.algs4.Stack;
+
 /**
- *  @author Josh Hug
+ * @author Josh Hug
  */
 public class MazeDepthFirstPaths extends MazeExplorer {
     /* Inherits public fields:
@@ -9,10 +11,10 @@ public class MazeDepthFirstPaths extends MazeExplorer {
     public int[] edgeTo;
     public boolean[] marked;
     */
-    private int s;
-    private int t;
+    private final int s;
+    private final int t;
+    private final Maze maze;
     private boolean targetFound = false;
-    private Maze maze;
 
 
     public MazeDepthFirstPaths(Maze m, int sourceX, int sourceY, int targetX, int targetY) {
@@ -49,9 +51,41 @@ public class MazeDepthFirstPaths extends MazeExplorer {
         }
     }
 
+    private void dfsIterative(int startVertex) {
+        final Stack<Integer> fringe = new Stack<>();
+        fringe.push(startVertex);
+        distTo[startVertex] = 0;
+        edgeTo[startVertex] = startVertex;
+
+        while (!fringe.isEmpty()) {
+            int vertex = fringe.pop();
+            if (marked[vertex]) {
+                // Only enters when there is any cycle
+                System.out.printf("Skipped visited vertex (%d,%d)%n", maze.toX(vertex), maze.toY(vertex));
+                continue;
+            }
+            // Only marks after visit
+            // Otherwise it may become BFS
+            marked[vertex] = true;
+            announce();
+            for (int neighbor : maze.adj(vertex)) {
+                if (neighbor == edgeTo[vertex]) {
+                    System.out.printf("Skipped parent vertex (%d,%d) of vertex (%d,%d)%n", maze.toX(neighbor), maze.toY(neighbor), maze.toX(vertex), maze.toY(vertex));
+                    continue;
+                }
+                if (!marked[neighbor]) {
+                    fringe.push(neighbor);
+                    distTo[neighbor] = distTo[vertex] + 1;
+                    edgeTo[neighbor] = vertex;
+                }
+            }
+        }
+    }
+
     @Override
     public void solve() {
-        dfs(s);
+        dfsIterative(s);
+        System.out.println("DFS finished.");
     }
 }
 
