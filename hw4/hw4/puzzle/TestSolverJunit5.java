@@ -51,4 +51,18 @@ public class TestSolverJunit5 {
             );
         });
     }
+
+    @TestFactory
+    public Stream<DynamicTest> testVariousBoardPuzzles() {
+        return IntStream.rangeClosed(0, 31).mapToObj(numMoves -> {
+            String puzzleFilename = String.format("input/puzzle%02d.txt", numMoves);
+            return DynamicTest.dynamicTest(String.format("%s, %d", puzzleFilename, numMoves),
+                    () -> {
+                        WorldState board = readBoard(puzzleFilename);
+                        Solver solver = new Solver(board);
+                        assertEquals(numMoves, solver.moves());
+                    }
+            );
+        });
+    }
 }

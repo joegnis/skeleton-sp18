@@ -17,11 +17,23 @@ public class EightPuzzleSolver {
 
         Field fieldInsertCount = solver.getClass().getDeclaredField("totalInsertToFringe");
         Field fieldCacheHitCount = solver.getClass().getDeclaredField("countCacheHits");
+        Field fieldUsedStateSkips = solver.getClass().getDeclaredField("countSkipsUsedState");
+        Field fieldEqualsToGrandparentSkips = solver.getClass().getDeclaredField("countSkipsEqualToGrandparent");
+        Field fieldBothSkips = solver.getClass().getDeclaredField("countSkipsBothUsedStateAndEqualToGrandparent");
         fieldInsertCount.setAccessible(true);
         fieldCacheHitCount.setAccessible(true);
+        fieldUsedStateSkips.setAccessible(true);
+        fieldEqualsToGrandparentSkips.setAccessible(true);
+        fieldBothSkips.setAccessible(true);
         int totalInsertToFringe = fieldInsertCount.getInt(solver);
         int countCacheHits = fieldCacheHitCount.getInt(solver);
+        int countUsedStateSkip = fieldUsedStateSkips.getInt(solver);
+        int countEqualsToGrandparentSkips = fieldEqualsToGrandparentSkips.getInt(solver);
+        int countBothSkips = fieldBothSkips.getInt(solver);
         StdOut.printf("Number of total insertions into fringe: %d%n", totalInsertToFringe);
         StdOut.printf("Number of cache hits: %d%n", countCacheHits);
+        StdOut.printf("Number of skips due to state already used: %d%n", countUsedStateSkip);
+        StdOut.printf("Number of skips due to equality to grandparent: %d%n", countEqualsToGrandparentSkips);
+        StdOut.printf("Number of skips due to both reason above: %d%n", countBothSkips);
     }
 }
