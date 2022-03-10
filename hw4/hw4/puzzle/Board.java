@@ -81,11 +81,8 @@ public class Board implements WorldState {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 int tile = tiles[i][j];
-                if (tile == 0) {
+                if (tile != 0 && rightTile != tile) {
                     // The empty cell does not count
-                    continue;
-                }
-                if (rightTile == tile) {
                     distance++;
                 }
                 rightTile++;
