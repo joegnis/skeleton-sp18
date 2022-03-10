@@ -11,7 +11,8 @@ import java.util.*;
 public class Solver {
     private final Map<WorldState, Integer> estimatedDistanceCache;
     private SearchNode lastSearchNode;
-    private int totalInsertFringe;  // Debugging only
+    private int totalInsertToFringe;  // Debugging only
+    private int countCacheHits;  // Debugging only
 
     private class SearchNode implements Comparable<SearchNode> {
         private final WorldState state;
@@ -29,21 +30,23 @@ public class Solver {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             SearchNode that = (SearchNode) o;
-            return moves == that.moves && state.equals(that.state) && Objects.equals(prevNode, that.prevNode);
+            return compareTo(that) == 0;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(state, moves, prevNode);
+            return getPriority(this);
         }
 
         @Override
         public int compareTo(SearchNode o) {
-            estimatedDistanceCache.putIfAbsent(state, state.estimatedDistanceToGoal());
-            int distThis = estimatedDistanceCache.get(state);
-            estimatedDistanceCache.putIfAbsent(o.state, o.state.estimatedDistanceToGoal());
-            int distOther = estimatedDistanceCache.get(o.state);
-            return (moves + distThis) - (o.moves + distOther);
+            return getPriority(this) - getPriority(o);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("SearchNode{state=%s, moves=%s, prevNode=%s}",
+                    state, moves, prevNode == null ? "null" : String.format("{state=%s, moves=%s}", prevNode.state, prevNode.moves));
         }
     }
 
@@ -58,7 +61,8 @@ public class Solver {
 
         final MinPQ<SearchNode> fringe = new MinPQ<>();
         fringe.insert(new SearchNode(initial, 0, null));
-        totalInsertFringe = 1;
+        totalInsertToFringe = 1;
+        countCacheHits = 0;
         while (!fringe.isEmpty()) {
             SearchNode node = fringe.delMin();
             WorldState state = node.state;
@@ -70,8 +74,9 @@ public class Solver {
             SearchNode prevNode = node.prevNode;
             for (WorldState neighbor : state.neighbors()) {
                 if (prevNode == null || !neighbor.equals(prevNode.state)) {
-                    fringe.insert(new SearchNode(neighbor, node.moves + 1, node));
-                    totalInsertFringe++;
+                    SearchNode neighborNode = new SearchNode(neighbor, node.moves + 1, node);
+                    fringe.insert(neighborNode);
+                    totalInsertToFringe++;
                 }
             }
         }
@@ -101,7 +106,12 @@ public class Solver {
         return results;
     }
 
-    public int getTotalInsertFringe() {
-        return totalInsertFringe;
+    private int getPriority(SearchNode node) {
+        WorldState state = node.state;
+        Integer estimate = estimatedDistanceCache.putIfAbsent(state, state.estimatedDistanceToGoal());
+        if (estimate != null) {
+            countCacheHits++;
+        }
+        return estimatedDistanceCache.get(state) + node.moves;
     }
 }

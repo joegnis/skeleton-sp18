@@ -1,5 +1,6 @@
 package hw4.puzzle;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -70,7 +71,7 @@ public class CommonBugDetector {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
         CommonBugPuzzleState cbps = new CommonBugPuzzleState();
         Solver s = new Solver(cbps);
 
@@ -79,8 +80,11 @@ public class CommonBugDetector {
 
         AlphabetEasyPuzzle aep = new AlphabetEasyPuzzle('a');
         Solver s3 = new Solver(aep);
-        System.out.printf("The number of total things ever enqueued in MinPQ: %s, which should be approximately 25", s3.getTotalInsertFringe());
         // if you print out the total number of items enqueued by s3
         // it should be approximately 25, not approximately 50.
+        Field fieldInsertCount = s3.getClass().getDeclaredField("totalInsertToFringe");
+        fieldInsertCount.setAccessible(true);
+        int totalInsertToFringe = fieldInsertCount.getInt(s3);
+        System.out.printf("The number of total things ever enqueued in MinPQ: %s, which should be approximately 25", totalInsertToFringe);
     }
 }
